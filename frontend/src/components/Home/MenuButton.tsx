@@ -1,0 +1,51 @@
+type MenuButtonProps = {
+  Content: string;
+  Type: string;
+};
+
+function MenuButton(Props: MenuButtonProps) {
+  switch (Props.Type) {
+    case "Start":
+      return (
+        <button
+          className={
+            "px-2 w-[70px] h-10 rounded-2xl bg-green-600 text-white transition-all duration-100 hover:bg-green-400 " +
+            "hover:transform-[scale(1.1)]"
+          }
+        >
+          {Props.Content}
+        </button>
+      );
+      break;
+    case "Stop":
+      return (
+        <button
+          className={
+            "px-2 w-[70px] h-10 rounded-2xl bg-red-600 text-white transition-all duration-100 hover:bg-red-500 " +
+            "hover:transform-[scale(1.1)]"
+          }
+        >
+          {Props.Content}
+        </button>
+      );
+      break;
+    case "Pause":
+      return (
+        <button
+          className={
+            "px-2 w-[70px] h-10 rounded-2xl bg-yellow-500 text-white transition-all duration-100 hover:bg-yellow-300 " +
+            "hover:transform-[scale(1.1)]"
+          }
+        >
+          {Props.Content}
+        </button>
+      );
+      break;
+    default:
+      console.warn("Undefinedn Button");
+      return <></>;
+      break;
+  }
+}
+
+export default MenuButton;

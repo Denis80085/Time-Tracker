@@ -10,7 +10,7 @@ type MenuOptionProps = {
 function MenuOption(menuOptionProps: MenuOptionProps) {
   return (
     <Link
-      className="w-9/10 h-fit mx-auto py-2 flex items-center text-gray-400 hover:bg-gray-700 hover:text-white rounded-md"
+      className="w-full h-fit mx-auto py-2 flex items-center text-gray-400 hover:bg-gray-700 hover:text-white rounded-md"
       to={menuOptionProps.linkTo}
     >
       <img

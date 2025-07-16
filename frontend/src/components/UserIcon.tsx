@@ -6,13 +6,13 @@ type User = {
 
 function UserIcon(userData: User) {
   return (
-    <div>
+    <div className="flex flex-col items-center w-50">
       <img
         src={userData.image}
         alt={`${userData.firstName} ${userData.lastName}`}
-        className="w-50 rounded-full"
+        className="w-45 rounded-full"
       />
-      <p>{`${userData.firstName} ${userData.lastName}`}</p>
+      <p className="font-bold text-2xl text-white">{`${userData.firstName} ${userData.lastName}`}</p>
     </div>
   );
 }
