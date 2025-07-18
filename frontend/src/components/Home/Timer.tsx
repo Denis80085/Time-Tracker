@@ -5,9 +5,10 @@ type TimerProps = {
   started: boolean;
   stoped: boolean;
   paused: boolean;
+  border: string;
 };
 
-function Timer({ started, paused, stoped }: TimerProps) {
+function Timer({ started, paused, stoped, border }: TimerProps) {
   const [Seconds, setSeconds] = useState(0);
   const [Minutes, setMinutes] = useState(0);
   const [Hours, setHours] = useState(0);
@@ -76,8 +77,9 @@ function Timer({ started, paused, stoped }: TimerProps) {
   return (
     <div
       className={
-        "flex justify-center items-center space-x-2 w-fit mx-auto p-2 border-2 border-amber-100 rounded-2xl " +
-        "text-white text-3xl text-center"
+        "flex justify-center items-center space-x-2 w-fit mx-auto p-2 " +
+        `rounded-2xl border-2 ${border}` +
+        " text-white text-3xl text-center transition-all duration-200"
       }
     >
       <TimerBlock value={Hours} valueType={"h"} />

@@ -11,21 +11,29 @@ function UserMenu() {
   const [StarTimer, setStartTimer] = useState(false);
   const [PauseTimer, setPauseTimer] = useState(false);
   const [StopTimer, setStopTimer] = useState(false);
+  const [TimerBorderColor, SetTimerBorderColor] = useState("border-amber-100");
 
-  function HandelHover(Phrase: string, PhraseColor: string) {
-    setPhraseColor(PhraseColor);
+  function HandelHover(Phrase: string, Color: string) {
+    setPhraseColor(`text-${Color}`);
     setPhrase(Phrase);
+    SetTimerBorderColor(`border-${Color}`);
   }
 
   function HandelMouseLeave() {
     setPhrase(defaultPhrase);
     setPhraseColor("text-white");
+    SetTimerBorderColor("border-amber-100");
   }
 
   return (
     <div className="mx-auto my-auto  w-1/3 space-y-4">
       <AnimatedParagraph content={Phrase} speed={30} color={PhraseColor} />
-      <Timer started={StarTimer} paused={PauseTimer} stoped={StopTimer} />
+      <Timer
+        started={StarTimer}
+        paused={PauseTimer}
+        stoped={StopTimer}
+        border={TimerBorderColor}
+      />
       <div className="w-full flex justify-center space-x-1.5">
         <MenuButton
           Type="Start"
@@ -33,7 +41,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Start Timer", "text-green-500");
+            HandelHover("Start Timer", "green-500");
           }}
           OnClick={() => {
             setStartTimer(true);
@@ -48,7 +56,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Pause Timer", "text-yellow-300");
+            HandelHover("Pause Timer", "yellow-300");
           }}
           OnClick={() => {
             setStartTimer(false);
@@ -62,7 +70,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Stop Timer", "text-red-600");
+            HandelHover("Stop Timer", "red-600");
           }}
           OnClick={() => {
             setStopTimer(true);
