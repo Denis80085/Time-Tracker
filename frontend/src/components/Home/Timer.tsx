@@ -9,7 +9,19 @@ type TimerProps = {
 
 function Timer({ started, paused, stoped }: TimerProps) {
   const [Seconds, setSeconds] = useState(0);
+  const [Minutes, setMinutes] = useState(0);
+  const [Hours, setHours] = useState(0);
   const counterRef = useRef<number | null>(null);
+
+  function OnSixtySeconds() {
+    setSeconds(0);
+    setMinutes((prev) => prev + 1);
+  }
+
+  function OnSixtyMinutes() {
+    setMinutes(0);
+    setHours((prev) => prev + 1);
+  }
 
   useEffect(() => {
     if (!counterRef.current && started) {
@@ -20,6 +32,10 @@ function Timer({ started, paused, stoped }: TimerProps) {
   }, [started]);
 
   useEffect(() => {
+    if (Seconds > 59) {
+      OnSixtySeconds();
+    }
+
     if (counterRef.current != null && started) {
       clearInterval(counterRef.current);
       counterRef.current = window.setInterval(() => {
@@ -27,6 +43,12 @@ function Timer({ started, paused, stoped }: TimerProps) {
       }, 1000);
     }
   }, [Seconds]);
+
+  useEffect(() => {
+    if (Minutes > 59) {
+      OnSixtyMinutes();
+    }
+  }, [Minutes]);
 
   useEffect(() => {
     if (counterRef.current != null && paused) {
@@ -40,9 +62,16 @@ function Timer({ started, paused, stoped }: TimerProps) {
       clearInterval(counterRef.current);
       counterRef.current = null;
     }
-
     setSeconds(0);
+    setMinutes(0);
+    setHours(0);
   }, [stoped]);
+
+  useEffect(() => {
+    setSeconds(0);
+    setMinutes(0);
+    setHours(0);
+  }, []);
 
   return (
     <div
@@ -51,9 +80,9 @@ function Timer({ started, paused, stoped }: TimerProps) {
         "text-white text-3xl text-center"
       }
     >
-      <TimerBlock value={0} valueType={"h"} />
+      <TimerBlock value={Hours} valueType={"h"} />
       <span>:</span>
-      <TimerBlock value={0} valueType={"m"} />
+      <TimerBlock value={Minutes} valueType={"m"} />
       <span>:</span>
       <TimerBlock value={Seconds} valueType={"s"} />
     </div>

@@ -12,6 +12,7 @@ function Home() {
         />
         <UserMenu />
       </section>
+      {/*Latest sesions. */}
     </div>
   );
 }

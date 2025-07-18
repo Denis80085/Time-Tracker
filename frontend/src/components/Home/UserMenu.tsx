@@ -2,6 +2,7 @@ import MenuButton from "./MenuButton";
 import { useState } from "react";
 import AnimatedParagraph from "./AnimatedParagraph";
 import Timer from "./Timer";
+import { startSession, finishSession } from "../../services/WorkSesionService";
 
 function UserMenu() {
   const defaultPhrase = "Actions";
@@ -38,6 +39,7 @@ function UserMenu() {
             setStartTimer(true);
             setPauseTimer(false);
             setStopTimer(false);
+            startSession();
           }}
         />
         <MenuButton
@@ -66,6 +68,8 @@ function UserMenu() {
             setStopTimer(true);
             setPauseTimer(false);
             setStartTimer(false);
+            let id = localStorage.getItem("currentSessionId");
+            if (id) finishSession(id);
           }}
         />
       </div>
