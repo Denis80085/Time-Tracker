@@ -5,8 +5,8 @@ type TimerBlockProps = {
 
 function TimerBlock({ valueType, value }: TimerBlockProps) {
   return (
-    <div className="">
-      <p>{`${value < 10 ? "0" + value : value} ${valueType}`}</p>
+    <div>
+      <p>{`${value < 10 ? "0" + value : value}${valueType}`}</p>
     </div>
   );
 }

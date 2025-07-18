@@ -2,15 +2,17 @@ type MenuButtonProps = {
   Type: string;
   OnHover: () => void;
   OnMouseLeave: () => void;
+  OnClick: () => void;
 };
 
-function MenuButton(Props: MenuButtonProps) {
-  switch (Props.Type) {
+function MenuButton({ OnHover, OnMouseLeave, OnClick, Type }: MenuButtonProps) {
+  switch (Type) {
     case "Start":
       return (
         <button
-          onMouseLeave={Props.OnMouseLeave}
-          onMouseEnter={Props.OnHover}
+          onMouseLeave={OnMouseLeave}
+          onMouseEnter={OnHover}
+          onClick={OnClick}
           className={
             "px-2 w-[70px] h-10 rounded-2xl flex justify-center bg-green-600 text-white transition-all duration-100 " +
             "hover:bg-green-400 " +
@@ -25,8 +27,9 @@ function MenuButton(Props: MenuButtonProps) {
     case "Stop":
       return (
         <button
-          onMouseLeave={Props.OnMouseLeave}
-          onMouseEnter={Props.OnHover}
+          onMouseLeave={OnMouseLeave}
+          onMouseEnter={OnHover}
+          onClick={OnClick}
           className={
             "px-2 w-[70px] h-10 rounded-2xl bg-red-600 text-white flex justify-center transition-all duration-100 hover:bg-red-500 " +
             "hover:transform-[scale(1.1)] " +
@@ -40,8 +43,9 @@ function MenuButton(Props: MenuButtonProps) {
     case "Pause":
       return (
         <button
-          onMouseLeave={Props.OnMouseLeave}
-          onMouseEnter={Props.OnHover}
+          onMouseLeave={OnMouseLeave}
+          onMouseEnter={OnHover}
+          onClick={OnClick}
           className={
             "px-2 w-[70px] h-10 rounded-2xl bg-yellow-500 text-white flex justify-center transition-all duration-100 hover:bg-yellow-300 " +
             "hover:transform-[scale(1.1)] " +
