@@ -3,7 +3,7 @@ import UserIcon from "../components/UserIcon";
 
 function Home() {
   return (
-    <div className="w-[calc(100vw - 256px)] ml-64">
+    <div className="w-[calc(100vw - 256px)] h-[100vh] ml-64 bg-gray-400">
       <section className="border-solid border-b-2 border-gray-700 p-5 bg-gray-800 flex">
         <UserIcon
           firstName={"Denis"}
