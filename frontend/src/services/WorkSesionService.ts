@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import WK_Model from '../Model/WK_Model';
 
 type WS_Start = {
     Id: string, 
@@ -7,18 +8,6 @@ type WS_Start = {
     Hours: number,
     Minutes: number,
     Seconds: number
-}
-
-type WS_Finished = {
-    Id: string, 
-    TimeUTC: number, 
-    Date: string,
-    StartHours: number,
-    StartMinutes: number,
-    StartSeconds: number,
-    EndHours: number,
-    EndMinutes: number,
-    EndSeconds: number
 }
 
 function startSession()
@@ -50,17 +39,17 @@ function finishSession(StartedSessionId: string)
 
         const Today = new Date();
 
-        const finishedSession: WS_Finished = {
-            Id: uuidv4(),
-            TimeUTC: Date.now(),
-            Date: `${Today.getFullYear()}-${Today.getMonth()}-${Today.getDate()}`,
-            StartHours: StartedSession.Hours,
-            StartMinutes: StartedSession.Minutes,
-            StartSeconds: StartedSession.Seconds,
-            EndHours: Today.getHours(),
-            EndMinutes: Today.getMinutes(),
-            EndSeconds: Today.getSeconds()
-        }
+        const finishedSession = new WK_Model(
+            uuidv4(),
+            Date.now(),
+            `${Today.getFullYear()}-${Today.getMonth()}-${Today.getDate()}`,
+            StartedSession.Hours,
+            StartedSession.Minutes,
+            StartedSession.Seconds,
+            Today.getHours(),
+            Today.getMinutes(),
+            Today.getSeconds()
+        )
 
         localStorage.removeItem(StartedSessionId);
         localStorage.setItem(finishedSession.Id, JSON.stringify(finishedSession));
