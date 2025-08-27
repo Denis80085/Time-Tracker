@@ -1,14 +1,47 @@
 import UserMenu from "../components/Home/UserMenu";
-import Table from "../components/Table";
 import UserIcon from "../components/UserIcon";
-import WK_Model from "../Model/WK_Model";
+import Table from "../components/Home/TableComponent/Table";
+import { TableColumn } from "../components/Home/TableComponent/Table";
+
+type RowData = {
+  date: string;
+  startTime: string;
+  endTime: string;
+  state: string;
+};
 
 function Home() {
-  let WK_Sessions = [
-    new WK_Model("123", 12314, "Date", 23, 2, 1, 3, 34, 12),
-    new WK_Model("123", 12314, "Date", 23, 2, 1, 3, 34, 12),
-    new WK_Model("123", 12314, "Date", 23, 2, 1, 3, 34, 12),
-    new WK_Model("123", 12314, "Date", 23, 2, 1, 3, 34, 12),
+  const Columns: TableColumn<RowData>[] = [
+    { Name: "Date", Accesor: "date" },
+    { Name: "Start Time", Accesor: "startTime" },
+    { Name: "End Time", Accesor: "endTime" },
+    { Name: "State", Accesor: "state" },
+  ];
+  const Rows: RowData[] = [
+    {
+      date: "2022-01-01",
+      startTime: "12:00",
+      endTime: "13:00",
+      state: "Running",
+    },
+    {
+      date: "2022-01-01",
+      startTime: "12:00",
+      endTime: "13:00",
+      state: "Running",
+    },
+    {
+      date: "2022-01-01",
+      startTime: "12:00",
+      endTime: "13:00",
+      state: "Running",
+    },
+    {
+      date: "2022-01-01",
+      startTime: "12:00",
+      endTime: "13:00",
+      state: "Running",
+    },
   ];
 
   return (
@@ -23,7 +56,7 @@ function Home() {
       </section>
       {/*Latest sesions. */}
       <section>
-        <Table WorlSesions={WK_Sessions} />
+        <Table Columns={Columns} Rows={Rows} />
       </section>
     </div>
   );
