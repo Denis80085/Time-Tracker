@@ -5,41 +5,54 @@ import { TableColumn } from "../components/Home/TableComponent/Table";
 
 type RowData = {
   date: string;
-  startTime: string;
-  endTime: string;
+  workhours: string;
+  worked: string;
+  pause: string;
   state: string;
 };
 
 function Home() {
   const Columns: TableColumn<RowData>[] = [
     { Name: "Date", Accesor: "date" },
-    { Name: "Start Time", Accesor: "startTime" },
-    { Name: "End Time", Accesor: "endTime" },
+    { Name: "Arbeitszeiten", Accesor: "workhours" },
+    { Name: "Stunden gearbeitet", Accesor: "worked" },
+    { Name: "Pause in minuten", Accesor: "pause" },
     { Name: "State", Accesor: "state" },
   ];
   const Rows: RowData[] = [
     {
-      date: "2022-01-01",
-      startTime: "12:00",
-      endTime: "13:00",
+      date: "Mo, 2022-01-01",
+      workhours: "7:00-15:00",
+      worked: "8:00",
+      pause: "30",
       state: "Running",
     },
     {
-      date: "2022-01-01",
-      startTime: "12:00",
-      endTime: "13:00",
+      date: "Di, 2022-01-02",
+      workhours: "7:00-15:00",
+      worked: "8:00",
+      pause: "30",
       state: "Running",
     },
     {
-      date: "2022-01-01",
-      startTime: "12:00",
-      endTime: "13:00",
+      date: "Mi, 2022-01-03",
+      workhours: "7:00-15:00",
+      worked: "8:00",
+      pause: "30",
       state: "Running",
     },
     {
-      date: "2022-01-01",
-      startTime: "12:00",
-      endTime: "13:00",
+      date: "Do, 2022-01-04",
+      workhours: "7:00-15:00",
+      worked: "8:00",
+      pause: "30",
+      state: "Running",
+    },
+    {
+      date: "Fr, 2022-01-05",
+      workhours: "7:00-12:00",
+      worked: "5:00",
+      pause: "30",
       state: "Running",
     },
   ];
@@ -50,12 +63,12 @@ function Home() {
         <UserIcon
           firstName={"Denis"}
           lastName={"Ermurachi"}
-          image={"/public/images/user.webp"}
+          image={"/images/user.webp"}
         />
         <UserMenu />
       </section>
       {/*Latest sesions. */}
-      <section>
+      <section className="py-5 px-2 h-100">
         <Table Columns={Columns} Rows={Rows} />
       </section>
     </div>

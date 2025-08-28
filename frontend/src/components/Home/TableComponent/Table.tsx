@@ -7,19 +7,32 @@ type TableProps<T> = {
 
 function Table<T extends object>({ Columns, Rows }: TableProps<T>) {
   return (
-    <table>
-      <thead>
+    <table className="w-full h-full">
+      <thead className="bg-gray-800 text-white h-1/9  text-2xl">
         <tr>
           {Columns.map((column, index) => (
-            <th key={index}>{column.Name}</th>
+            <th className="relative" key={index}>
+              {column.Name}
+              {index < Columns.length - 1 && (
+                <div className="absolute right-0 top-[10%] h-[80%] w-1 border-l border-white"></div>
+              )}
+            </th>
           ))}
         </tr>
       </thead>
-      <tbody>
+      <tbody className="h-6/7 text-center">
         {Rows.map((row, Rindex) => (
-          <tr key={Rindex}>
+          <tr
+            className="bg-gray-100 text-[1.8rem] border-b border-gray-500"
+            key={Rindex}
+          >
             {Columns.map((column, Cindex) => (
-              <td key={Cindex}>{String(row[column.Accesor])}</td>
+              <td className="relative" key={Cindex}>
+                {String(row[column.Accesor])}
+                {Cindex < Columns.length - 1 && (
+                  <div className="absolute right-0 top-[10%] h-[80%] w-1 border-l border-gray-500"></div>
+                )}
+              </td>
             ))}
           </tr>
         ))}
