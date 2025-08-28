@@ -1,59 +1,44 @@
 import UserMenu from "../components/Home/UserMenu";
 import UserIcon from "../components/UserIcon";
-import Table from "../components/Home/TableComponent/Table";
-import { TableColumn } from "../components/Home/TableComponent/Table";
-
-type RowData = {
-  date: string;
-  workhours: string;
-  worked: string;
-  pause: string;
-  state: string;
-};
+import WeekOverView from "../components/Home/WeekOverView.tsx";
+import { type DayData, DayType } from "../components/Home/WeekOverView.tsx";
 
 function Home() {
-  const Columns: TableColumn<RowData>[] = [
-    { Name: "Date", Accesor: "date" },
-    { Name: "Arbeitszeiten", Accesor: "workhours" },
-    { Name: "Stunden gearbeitet", Accesor: "worked" },
-    { Name: "Pause in minuten", Accesor: "pause" },
-    { Name: "State", Accesor: "state" },
-  ];
-  const Rows: RowData[] = [
+  const Days: DayData[] = [
     {
-      date: "Mo, 2022-01-01",
-      workhours: "7:00-15:00",
-      worked: "8:00",
+      date: "Mo, 25.08.2025",
+      workhours: "7:00-15:30",
+      worked: "8",
       pause: "30",
-      state: "Running",
+      type: DayType.ARBEITSTAG,
     },
     {
-      date: "Di, 2022-01-02",
-      workhours: "7:00-15:00",
-      worked: "8:00",
+      date: "Di, 26.08.2025",
+      workhours: "7:00-15:30",
+      worked: "8",
       pause: "30",
-      state: "Running",
+      type: DayType.ARBEITSTAG,
     },
     {
-      date: "Mi, 2022-01-03",
-      workhours: "7:00-15:00",
-      worked: "8:00",
+      date: "Mi, 27.08.2025",
+      workhours: "7:00-15:30",
+      worked: "8",
       pause: "30",
-      state: "Running",
+      type: DayType.ARBEITSTAG,
     },
     {
-      date: "Do, 2022-01-04",
-      workhours: "7:00-15:00",
-      worked: "8:00",
+      date: "Do, 28.08.2025",
+      workhours: "7:00-15:30",
+      worked: "8",
       pause: "30",
-      state: "Running",
+      type: DayType.ARBEITSTAG,
     },
     {
-      date: "Fr, 2022-01-05",
-      workhours: "7:00-12:00",
-      worked: "5:00",
+      date: "Fr, 29.08.2025",
+      workhours: "7:00-15:30",
+      worked: "8",
       pause: "30",
-      state: "Running",
+      type: DayType.ARBEITSTAG,
     },
   ];
 
@@ -69,7 +54,8 @@ function Home() {
       </section>
       {/*Latest sesions. */}
       <section className="py-5 px-2 h-100">
-        <Table Columns={Columns} Rows={Rows} />
+        {/*<Table Columns={Columns} Rows={Rows} />*/}
+        <WeekOverView weekNumber={1} days={Days} />
       </section>
     </div>
   );
