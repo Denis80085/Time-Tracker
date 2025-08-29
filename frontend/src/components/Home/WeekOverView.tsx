@@ -1,13 +1,12 @@
 import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
-import AnimatedParagraph from "./AnimatedParagraph.tsx";
 
 type RowData = {
   date: string;
   workhours: string;
   worked: string;
-  pause: string;
+  pause: number;
   state: number;
 };
 
@@ -15,43 +14,67 @@ type DayData = {
   //isCurrentDay: boolean;
   date: string;
   workhours: string;
-  worked: string;
-  pause: string;
+  worked: number; //in milliseconds
+  pause: number; //in minutes
   type: DayType;
 };
 
 type WeekOverViewProps = {
-  weekNumber: number;
   days: DayData[];
 };
 
-function WeekOverView({ weekNumber, days }: WeekOverViewProps) {
+function WeekOverView({ days }: WeekOverViewProps) {
   const Columns: TableColumn<RowData>[] = [
     { Name: "Date", Accesor: "date" },
     { Name: "Arbeitszeiten", Accesor: "workhours" },
-    { Name: "Stunden gearbeitet", Accesor: "worked" },
+    { Name: "Arbeitsstunden ohne Pause", Accesor: "worked" },
     { Name: "Pause in minuten", Accesor: "pause" },
     { Name: "State", Accesor: "state" },
   ];
+
+  let TotalWorkedMS = 0;
+  days.forEach((day) => {
+    TotalWorkedMS += day.worked;
+  });
+
+  function msToWorkTime(workedMiliseconds: number) {
+    const seconds = Math.floor((workedMiliseconds / 1000) % 60);
+    const minutes = Math.floor((workedMiliseconds / (1000 * 60)) % 60);
+    const hours = Math.floor(workedMiliseconds / (1000 * 60 * 60));
+
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
 
   const Rows: RowData[] = days.map((day) => {
     return {
       date: day.date,
       workhours: day.workhours,
-      worked: day.worked,
+      worked: msToWorkTime(day.worked),
       pause: day.pause,
       state: day.type,
     };
   });
 
   return (
-    <div>
-      <AnimatedParagraph
-        content={`Wochenübersicht Wochennumme ${weekNumber}`}
-        speed={30}
-        color="text-black"
-      />
+    <div
+      className="w-full h-full px-5 py-3 my-4 flex flex-col
+      bg-gray-500 border-3 border-gray-700 rounded-2xl
+      scrollbar-thumb-only overflow-auto"
+    >
+      <div className="flex justify-between items-end mb-3">
+        <h1 className="text-5xl text-white text-center w-full">
+          Wochenübersicht
+        </h1>
+      </div>
       <Table Columns={Columns} Rows={Rows} />
+      <div className="bg-gray-800 py-1.5 flex justify-center items-center space-x-2 border-t-1 border-t-gray-500">
+        <p className="text-white text-2xl text-center">
+          Gesamt Arbeitsstunden:
+        </p>
+        <span className="text-gray-900 text-2xl text-center p-1.5 bg-gray-400 rounded-[10px] border-2 border-gray-500">
+          {msToWorkTime(TotalWorkedMS)}
+        </span>
+      </div>
     </div>
   );
 }

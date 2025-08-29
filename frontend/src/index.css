@@ -3,6 +3,23 @@
 @source inline("text-yellow-300 border-yellow-300");
 @source inline("text-red-600 border-red-600");
 
+@layer components {
+  .scrollbar-thumb-only {
+    /* For Firefox */
+    scrollbar-color: var(--color-gray-800) transparent;
+    /* For WebKit browsers */
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-gray-800);
+      border-radius: 100vh;
+      border: 3px solid transparent;
+    }
+  }
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -17,3 +34,5 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@plugin 'tailwind-scrollbar';

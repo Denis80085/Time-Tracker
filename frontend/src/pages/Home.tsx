@@ -8,36 +8,36 @@ function Home() {
     {
       date: "Mo, 25.08.2025",
       workhours: "7:00-15:30",
-      worked: "8",
-      pause: "30",
+      worked: 30_600_000,
+      pause: 30,
       type: DayType.ARBEITSTAG,
     },
     {
       date: "Di, 26.08.2025",
       workhours: "7:00-15:30",
-      worked: "8",
-      pause: "30",
+      worked: 30_600_100,
+      pause: 30,
       type: DayType.ARBEITSTAG,
     },
     {
       date: "Mi, 27.08.2025",
       workhours: "7:00-15:30",
-      worked: "8",
-      pause: "30",
+      worked: 30_600_600,
+      pause: 30,
       type: DayType.ARBEITSTAG,
     },
     {
       date: "Do, 28.08.2025",
       workhours: "7:00-15:30",
-      worked: "8",
-      pause: "30",
+      worked: 30_604_400,
+      pause: 30,
       type: DayType.ARBEITSTAG,
     },
     {
       date: "Fr, 29.08.2025",
       workhours: "7:00-15:30",
-      worked: "8",
-      pause: "30",
+      worked: 30_605_200,
+      pause: 30,
       type: DayType.ARBEITSTAG,
     },
   ];
@@ -53,9 +53,9 @@ function Home() {
         <UserMenu />
       </section>
       {/*Latest sesions. */}
-      <section className="py-5 px-2 h-100">
+      <section className="h-1/2 min-h-50 mt-20">
         {/*<Table Columns={Columns} Rows={Rows} />*/}
-        <WeekOverView weekNumber={1} days={Days} />
+        <WeekOverView days={Days} />
       </section>
     </div>
   );
