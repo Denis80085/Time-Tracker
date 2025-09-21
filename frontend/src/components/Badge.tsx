@@ -1,9 +1,9 @@
 import { type VariantProps, cva } from "class-variance-authority";
-import type { FC } from "react";
+import type { FC, HTMLAttributes } from "react";
 import { cn } from "../utils/helpers.ts";
 
 const badgeVarients = cva(
-  "inline-flex items-center rounded-md font-medium inset-ring",
+  "inline-flex items-center justify-center rounded-md font-medium inset-ring",
   {
     variants: {
       variant: {
@@ -19,6 +19,7 @@ const badgeVarients = cva(
         small: "px-2.5 py-0.5 text-xs h-8",
         medium: "px-3 py-1 text-sm h-10",
         large: "px-4 py-2 text-lg h-12",
+        huge: "px-5 py-2 text-xl h-14",
       },
     },
     defaultVariants: {
@@ -28,12 +29,27 @@ const badgeVarients = cva(
   },
 );
 
-interface BadgeProps extends VariantProps<typeof badgeVarients> {
+interface BadgeProps
+  extends VariantProps<typeof badgeVarients>,
+    HTMLAttributes<HTMLSpanElement> {
   text: string;
 }
 
-const Badge: FC<BadgeProps> = ({ variant, size, text }) => {
-  return <span className={cn(badgeVarients({ variant, size }))}>{text}</span>;
+const Badge: FC<BadgeProps> = ({
+  variant,
+  size,
+  text,
+  className,
+  ...props
+}) => {
+  return (
+    <span
+      className={cn(badgeVarients({ variant, size, className }))}
+      {...props}
+    >
+      {text}
+    </span>
+  );
 };
 
 export { Badge, badgeVarients };

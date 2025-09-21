@@ -2,13 +2,14 @@ import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import { Badge } from "../Badge.tsx";
+import { type ReactNode } from "react";
 
 type RowData = {
   date: string;
   workhours: string;
   worked: string;
   pause: number;
-  state: number;
+  state: ReactNode;
 };
 
 type DayData = {
@@ -30,7 +31,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
     { Name: "Arbeitszeiten", Accesor: "workhours" },
     { Name: "Arbeitsstunden ohne Pause", Accesor: "worked" },
     { Name: "Pause in minuten", Accesor: "pause" },
-    { Name: "State", Accesor: "state" },
+    { Name: "State", Accesor: "state", Render: (row) => row.state },
   ];
 
   let TotalWorkedMS = 0;
@@ -46,13 +47,63 @@ function WeekOverView({ days }: WeekOverViewProps) {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 
+  const dayTypeToBadgeVariant = (dayType: DayType) => {
+    switch (dayType) {
+      case DayType.ARBEITSTAG:
+        return (
+          <Badge
+            text={"ARBEITSTAG"}
+            size={"huge"}
+            variant={"green"}
+            className="w-1/2"
+          />
+        );
+      case DayType.KRANKTAG:
+        return (
+          <Badge
+            text={"KRANKTAG"}
+            size={"huge"}
+            variant={"red"}
+            className="w-1/2"
+          />
+        );
+      case DayType.URLAUB:
+        return (
+          <Badge
+            text={"URLAUB"}
+            size={"huge"}
+            variant={"blue"}
+            className="w-1/2"
+          />
+        );
+      case DayType.FEIERTAG:
+        return (
+          <Badge
+            text={"FEIERTAG"}
+            size={"huge"}
+            variant={"indigo"}
+            className="w-1/2"
+          />
+        );
+      default:
+        return (
+          <Badge
+            text={"UNANGETRAGEN"}
+            size={"huge"}
+            variant={"gray"}
+            className="w-1/2"
+          />
+        );
+    }
+  };
+
   const Rows: RowData[] = days.map((day) => {
     return {
       date: day.date,
       workhours: day.workhours,
       worked: msToWorkTime(day.worked),
       pause: day.pause,
-      state: day.type,
+      state: dayTypeToBadgeVariant(day.type),
     };
   });
 
