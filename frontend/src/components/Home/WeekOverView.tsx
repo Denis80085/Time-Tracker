@@ -1,6 +1,7 @@
 import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
+import { Badge } from "../Badge.tsx";
 
 type RowData = {
   date: string;
@@ -58,7 +59,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
   return (
     <div
       className="w-full h-full px-5 py-3 my-4 flex flex-col
-      bg-gray-500 border-3 border-gray-700 rounded-2xl
+      bg-gray-500 border-3 border-gray-700
       scrollbar-thumb-only overflow-auto"
     >
       <div className="flex justify-between items-end mb-3">
@@ -71,9 +72,11 @@ function WeekOverView({ days }: WeekOverViewProps) {
         <p className="text-white text-2xl text-center">
           Gesamt Arbeitsstunden:
         </p>
-        <span className="text-gray-900 text-2xl text-center p-1.5 bg-gray-400 rounded-[10px] border-2 border-gray-500">
-          {msToWorkTime(TotalWorkedMS)}
-        </span>
+        <Badge
+          text={msToWorkTime(TotalWorkedMS)}
+          size={"large"}
+          variant={"green"}
+        />
       </div>
     </div>
   );
