@@ -119,7 +119,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
         </h1>
       </div>
       <Table Columns={Columns} Rows={Rows} />
-      <div className="bg-gray-800 py-1.5 flex justify-center items-center space-x-2 border-t-1 border-t-gray-500">
+      <div className="bg-gray-900 py-1.5 flex justify-center items-center space-x-2 border-t-1 border-t-gray-500">
         <p className="text-white text-2xl text-center">
           Gesamt Arbeitsstunden:
         </p>

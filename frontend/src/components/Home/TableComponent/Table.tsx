@@ -8,7 +8,7 @@ type TableProps<T> = {
 function Table<T extends object>({ Columns, Rows }: TableProps<T>) {
   return (
     <table className="w-full h-full">
-      <thead className="bg-gray-800 text-white h-1/9  text-2xl">
+      <thead className="bg-gray-900 text-white h-1/9  text-2xl">
         <tr>
           {Columns.map((column, index) => (
             <th className="relative" key={index}>
@@ -23,7 +23,7 @@ function Table<T extends object>({ Columns, Rows }: TableProps<T>) {
       <tbody className="h-6/7 text-center">
         {Rows.map((row, Rindex) => (
           <tr
-            className="bg-gray-700 text-[1.8rem] border-b border-gray-500 text-gray-200"
+            className="bg-gray-800 text-[1.8rem] border-b border-gray-500 text-gray-200"
             key={Rindex}
           >
             {Columns.map((column, Cindex) => (
