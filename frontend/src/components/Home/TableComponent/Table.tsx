@@ -7,7 +7,7 @@ type TableProps<T> = {
 
 function Table<T extends object>({ Columns, Rows }: TableProps<T>) {
   return (
-    <table className="w-full h-full">
+    <table className="w-full h-full cursor-default">
       <thead className="bg-gray-900 text-white h-1/9  text-2xl">
         <tr>
           {Columns.map((column, index) => (

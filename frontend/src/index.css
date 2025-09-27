@@ -3,6 +3,10 @@
 @source inline("text-yellow-300 border-yellow-300");
 @source inline("text-red-600 border-red-600");
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer components {
   .scrollbar-thumb-only {
     /* For Firefox */
@@ -17,6 +21,30 @@
       border-radius: 100vh;
       border: 3px solid transparent;
     }
+  }
+}
+
+@layer utilities {
+  @keyframes sheen-horizontal {
+    from { background-position: 200% 0; }
+    to   { background-position: -100% 0; }
+  }
+
+  .shine-bg-play{
+    @apply max-w-md overflow-hidden shadow-2xl relative rounded-md;
+
+    background: linear-gradient(
+            85deg,
+            transparent 50%,
+            rgba(126, 118, 118, 0.8) 60%,
+            transparent 70%,
+            transparent 100%
+    );
+    background-size: 250% 250%, 100% 100%;
+    background-position: -100% 0, 0 0;
+    background-repeat: no-repeat;
+
+    animation: sheen-horizontal 400ms linear forwards;
   }
 }
 

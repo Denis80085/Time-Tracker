@@ -1,9 +1,10 @@
 import { type VariantProps, cva } from "class-variance-authority";
 import type { FC, HTMLAttributes } from "react";
+import { useState } from "react";
 import { cn } from "../utils/helpers.ts";
 
 const badgeVarients = cva(
-  "inline-flex items-center justify-center rounded-md font-medium inset-ring",
+  "flex items-center justify-center rounded-md font-medium inset-ring",
   {
     variants: {
       variant: {
@@ -42,14 +43,28 @@ const Badge: FC<BadgeProps> = ({
   className,
   ...props
 }) => {
+  const [play, setPlay] = useState(false);
+
+  const playAnimation = () => {
+    if (!play) {
+      setPlay(true);
+      setTimeout(() => setPlay(false), 400);
+    }
+  };
+
   return (
-    <span
-      className={cn(badgeVarients({ variant, size, className }))}
-      {...props}
+    <div
+      onMouseEnter={playAnimation}
+      className={`w-fit h-fit inline-flex items-center justify-center ${play && "shine-bg-play"}`}
     >
-      {text}
-    </span>
+      <span
+        className={cn(badgeVarients({ variant, size, className }))}
+        {...props}
+      >
+        {text}
+      </span>
+    </div>
   );
 };
 
-export { Badge, badgeVarients };
+export default Badge;

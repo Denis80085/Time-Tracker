@@ -1,7 +1,7 @@
 import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
-import { Badge } from "../Badge.tsx";
+import Badge from "../Badge.tsx";
 import { type ReactNode } from "react";
 
 type RowData = {
@@ -55,7 +55,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
             text={"ARBEITSTAG"}
             size={"huge"}
             variant={"green"}
-            className="w-1/2"
+            className="w-40"
           />
         );
       case DayType.KRANKTAG:
@@ -64,7 +64,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
             text={"KRANKTAG"}
             size={"huge"}
             variant={"red"}
-            className="w-1/2"
+            className="w-40"
           />
         );
       case DayType.URLAUB:
@@ -73,7 +73,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
             text={"URLAUB"}
             size={"huge"}
             variant={"blue"}
-            className="w-1/2"
+            className="w-40"
           />
         );
       case DayType.FEIERTAG:
@@ -82,7 +82,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
             text={"FEIERTAG"}
             size={"huge"}
             variant={"indigo"}
-            className="w-1/2"
+            className="w-40"
           />
         );
       default:
@@ -91,7 +91,7 @@ function WeekOverView({ days }: WeekOverViewProps) {
             text={"UNANGETRAGEN"}
             size={"huge"}
             variant={"gray"}
-            className="w-1/2"
+            className="w-40"
           />
         );
     }
