@@ -3,6 +3,7 @@ import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
 import { type ReactNode } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 type RowData = {
   date: string;
@@ -13,96 +14,114 @@ type RowData = {
 };
 
 type DayData = {
-  //isCurrentDay: boolean;
   date: string;
-  workhours: string;
+  started_at: string;
+  ended_at: string;
   worked: number; //in milliseconds
   pause: number; //in minutes
   type: DayType;
 };
 
-type WeekOverViewProps = {
-  days: DayData[];
+const Columns: TableColumn<RowData>[] = [
+  { Name: "Date", Accesor: "date" },
+  { Name: "Arbeitszeiten", Accesor: "workhours" },
+  { Name: "Arbeitsstunden ohne Pause", Accesor: "worked" },
+  { Name: "Pause in minuten", Accesor: "pause" },
+  { Name: "State", Accesor: "state", Render: (row) => row.state },
+];
+
+const msToWorkTime = (workedMiliseconds: number) => {
+  const seconds = Math.floor((workedMiliseconds / 1000) % 60);
+  const minutes = Math.floor((workedMiliseconds / (1000 * 60)) % 60);
+  const hours = Math.floor(workedMiliseconds / (1000 * 60 * 60));
+
+  return `${hours
+    .toString()
+    .padStart(
+      2,
+      "0",
+    )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 };
 
-function WeekOverView({ days }: WeekOverViewProps) {
-  const Columns: TableColumn<RowData>[] = [
-    { Name: "Date", Accesor: "date" },
-    { Name: "Arbeitszeiten", Accesor: "workhours" },
-    { Name: "Arbeitsstunden ohne Pause", Accesor: "worked" },
-    { Name: "Pause in minuten", Accesor: "pause" },
-    { Name: "State", Accesor: "state", Render: (row) => row.state },
-  ];
-
-  let TotalWorkedMS = 0;
-  days.forEach((day) => {
-    TotalWorkedMS += day.worked;
-  });
-
-  function msToWorkTime(workedMiliseconds: number) {
-    const seconds = Math.floor((workedMiliseconds / 1000) % 60);
-    const minutes = Math.floor((workedMiliseconds / (1000 * 60)) % 60);
-    const hours = Math.floor(workedMiliseconds / (1000 * 60 * 60));
-
-    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+const dayTypeToBadgeVariant = (dayType: DayType) => {
+  switch (dayType) {
+    case DayType.ARBEITSTAG:
+      return (
+        <Badge
+          text={"ARBEITSTAG"}
+          size={"huge"}
+          variant={"green"}
+          className="w-44"
+        />
+      );
+    case DayType.KRANKTAG:
+      return (
+        <Badge
+          text={"KRANKTAG"}
+          size={"huge"}
+          variant={"red"}
+          className="w-44"
+        />
+      );
+    case DayType.URLAUB:
+      return (
+        <Badge
+          text={"URLAUB"}
+          size={"huge"}
+          variant={"blue"}
+          className="w-44"
+        />
+      );
+    case DayType.FEIERTAG:
+      return (
+        <Badge
+          text={"FEIERTAG"}
+          size={"huge"}
+          variant={"indigo"}
+          className="w-44"
+        />
+      );
+    default:
+      return (
+        <Badge
+          text={"UNANGETRAGEN"}
+          size={"huge"}
+          variant={"gray"}
+          className="w-44"
+        />
+      );
   }
+};
 
-  const dayTypeToBadgeVariant = (dayType: DayType) => {
-    switch (dayType) {
-      case DayType.ARBEITSTAG:
-        return (
-          <Badge
-            text={"ARBEITSTAG"}
-            size={"huge"}
-            variant={"green"}
-            className="w-40"
-          />
-        );
-      case DayType.KRANKTAG:
-        return (
-          <Badge
-            text={"KRANKTAG"}
-            size={"huge"}
-            variant={"red"}
-            className="w-40"
-          />
-        );
-      case DayType.URLAUB:
-        return (
-          <Badge
-            text={"URLAUB"}
-            size={"huge"}
-            variant={"blue"}
-            className="w-40"
-          />
-        );
-      case DayType.FEIERTAG:
-        return (
-          <Badge
-            text={"FEIERTAG"}
-            size={"huge"}
-            variant={"indigo"}
-            className="w-40"
-          />
-        );
-      default:
-        return (
-          <Badge
-            text={"UNANGETRAGEN"}
-            size={"huge"}
-            variant={"gray"}
-            className="w-40"
-          />
-        );
-    }
-  };
+function WeekOverView() {
+  const [daysData, setDaysData] = useState<DayData[]>([]);
 
-  const Rows: RowData[] = days.map((day) => {
+  const workedHours = useMemo(
+    () => daysData.reduce((acc, day) => acc + day.worked, 0),
+    [daysData],
+  );
+
+  useEffect(() => {
+    fetch("https://www.ttrack.com/lweek")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data: DayData[]) => {
+        setDaysData(data);
+
+        let TotalWorkedMS = 0;
+        data.forEach((day) => {
+          TotalWorkedMS += day.worked;
+        });
+      });
+  }, []);
+
+  const rowsData = daysData.map((day) => {
     return {
       date: day.date,
-      workhours: day.workhours,
+      workhours: day.started_at + " - " + day.ended_at,
       worked: msToWorkTime(day.worked),
-      pause: day.pause,
+      pause: day.pause / 1000 / 60,
       state: dayTypeToBadgeVariant(day.type),
     };
   });
@@ -118,13 +137,13 @@ function WeekOverView({ days }: WeekOverViewProps) {
           Wochenübersicht
         </h1>
       </div>
-      <Table Columns={Columns} Rows={Rows} />
+      <Table Columns={Columns} Rows={rowsData} />
       <div className="bg-gray-900 py-1.5 flex justify-center items-center space-x-2 border-t-1 border-t-gray-500">
         <p className="text-white text-2xl text-center">
           Gesamt Arbeitsstunden:
         </p>
         <Badge
-          text={msToWorkTime(TotalWorkedMS)}
+          text={msToWorkTime(workedHours)}
           size={"large"}
           variant={"green"}
         />
@@ -134,4 +153,3 @@ function WeekOverView({ days }: WeekOverViewProps) {
 }
 
 export default WeekOverView;
-export { DayType, type DayData };
