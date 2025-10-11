@@ -26,7 +26,7 @@ function UserMenu() {
   }
 
   return (
-    <div className="mx-auto my-auto  w-1/3 space-y-4">
+    <div className="mx-auto my-auto w-1/3 space-y-4">
       <AnimatedParagraph content={Phrase} speed={30} color={PhraseColor} />
       <Timer
         started={StarTimer}
@@ -41,7 +41,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Start Timer", "green-500");
+            HandelHover("Arbeit anfangen", "green-500");
           }}
           OnClick={() => {
             setStartTimer(true);
@@ -56,7 +56,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Pause Timer", "yellow-300");
+            HandelHover("Pause machen", "yellow-300");
           }}
           OnClick={() => {
             setStartTimer(false);
@@ -70,7 +70,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Stop Timer", "red-600");
+            HandelHover("Arbeit beenden", "red-600");
           }}
           OnClick={() => {
             setStopTimer(true);

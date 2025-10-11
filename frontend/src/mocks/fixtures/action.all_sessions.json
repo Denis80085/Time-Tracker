@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "state": "completed",
+    "date": "2025-08-25",
+    "started_at": "08:00",
+    "ended_at": "16:30",
+    "pause": 1800000,
+    "worked": 28800000,
+    "type": 0
+  },
+  {
+    "id": 2,
+    "state": "completed",
+    "date": "2025-08-26",
+    "started_at": "09:00",
+    "ended_at": "17:15",
+    "pause": 3600000,
+    "worked": 26100000,
+    "type": 0
+  },
+  {
+    "id": 3,
+    "state": "completed",
+    "date": "2025-08-27",
+    "started_at": "08:15",
+    "ended_at": "16:45",
+    "pause": 1800000,
+    "worked": 27900000,
+    "type": 0
+  },
+  {
+    "id": 4,
+    "state": "completed",
+    "date": "2025-08-28",
+    "started_at": "08:00",
+    "ended_at": "12:00",
+    "pause": 900000,
+    "worked": 13500000,
+    "type": 0
+  },
+  {
+    "id": 5,
+    "state": "completed",
+    "date": "-",
+    "started_at": "",
+    "ended_at": "",
+    "pause": 0,
+    "worked": 0,
+    "type": 4
+  }
+]
