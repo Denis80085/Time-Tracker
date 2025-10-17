@@ -5,7 +5,7 @@ import WeekOverView from "../components/Home/WeekOverView.tsx";
 function Home() {
   return (
     <div className="w-[calc(100vw - 256px)] h-[100vh] ml-64 bg-gray-400">
-      <section className="border-solid border-b-2 border-gray-700 p-5 bg-gray-800 flex">
+      <section className="border-solid border-b-2 border-gray-700 p-5 h-60 bg-gray-800 flex justify-center items-center">
         <UserIcon
           firstName={"Denis"}
           lastName={"Ermurachi"}

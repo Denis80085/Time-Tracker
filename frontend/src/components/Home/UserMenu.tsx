@@ -26,7 +26,7 @@ function UserMenu() {
   }
 
   return (
-    <div className="mx-auto my-auto w-1/3 space-y-4">
+    <div className="w-1/3 space-y-4">
       <AnimatedParagraph content={Phrase} speed={30} color={PhraseColor} />
       <Timer
         started={StarTimer}

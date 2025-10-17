@@ -1,3 +1,5 @@
+import DropDownInfo from "./DropDownInfo.tsx";
+
 type User = {
   firstName: string;
   lastName: string;
@@ -6,13 +8,50 @@ type User = {
 
 function UserIcon(userData: User) {
   return (
-    <div className="flex flex-col items-center w-50">
+    <div className="flex flex-row items-center">
       <img
         src={userData.image}
         alt={`${userData.firstName} ${userData.lastName}`}
         className="w-45 rounded-full"
       />
-      <p className="font-bold text-2xl text-white">{`${userData.firstName} ${userData.lastName}`}</p>
+      {/*TODO: a Badge with the Name and role below icon*/}
+      <DropDownInfo
+        triggerContent={`IHRE DATEN`}
+        items={[
+          {
+            parName: "First Name",
+            parContent: userData.firstName,
+          },
+          {
+            parName: "Last Name",
+            parContent: userData.lastName,
+          },
+          {
+            parName: "Role",
+            parContent: "Admin",
+          },
+          {
+            parName: "Email",
+            parContent: "example@email.com",
+          },
+          {
+            parName: "Role",
+            parContent: "Admin",
+          },
+          {
+            parName: "Email",
+            parContent: "example@email.com",
+          },
+          {
+            parName: "Role",
+            parContent: "Admin",
+          },
+          {
+            parName: "Email",
+            parContent: "example@email.com",
+          },
+        ]}
+      />
     </div>
   );
 }
