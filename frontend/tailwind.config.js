@@ -28,10 +28,33 @@ module.exports = {
               },
             };
           },
+          "border-underline": (value) => {
+            const [color, val] = value.split("-");
+            return {
+              position: "relative",
+              "&::after": {
+                content: "''",
+                transition: "all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                position: "absolute",
+                width: "30%",
+                height: "1px",
+                bottom: "2px",
+                left: "35%",
+                borderBottom: `1px solid ${theme(`colors.${color}.${val}`)}`,
+              },
+              "&:hover": {
+                "&::after": {
+                  width: "70%",
+                  left: "15%",
+                },
+              },
+            };
+          },
         },
         {
           values: {
             dark: "gray-900",
+            light: "gray-200",
           },
         }, // Add more combos as needed
       );
