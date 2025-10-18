@@ -59,5 +59,36 @@ module.exports = {
         }, // Add more combos as needed
       );
     }),
+    plugin(function ({ matchUtilities }) {
+      matchUtilities(
+        {
+          "rotate-forwards": (value) => ({
+            transition: "all 0.3s ease",
+            transform: `rotate(${value})`,
+            transformOrigin: "center",
+          }),
+          "rotate-backwards": (value) => ({
+            transition: "all 0.3s ease",
+            transform: `rotate(-${value})`,
+          }),
+        },
+        {
+          values: {
+            // Define common values or allow arbitrary values
+            0: "0deg",
+            45: "45deg",
+            90: "90deg",
+            135: "135deg",
+            180: "180deg",
+            225: "225deg",
+            270: "270deg",
+            315: "315deg",
+            360: "360deg",
+          },
+          // Optional: allow arbitrary values like rotate-[30deg]
+          type: ["angle"],
+        },
+      );
+    }),
   ],
 };
