@@ -1,10 +1,12 @@
 import { type ReactNode, useEffect } from "react";
 import FaTriangle from "./SVGs/FaTriangle.tsx";
-import { useState, useRef } from "react";
+import Circle from "./SVGs/Circle.tsx";
+import { useState, useRef, useMemo } from "react";
 
 type DropDownInfoProps = {
   triggerContent: string;
   items?: ItemProps[];
+  className?: React.HTMLAttributes<void>["className"];
 };
 
 type ItemsWrapperProps = {
@@ -17,10 +19,26 @@ type ItemProps = {
   parContent: string;
 };
 
-const DropDownInfo = ({ triggerContent, items }: DropDownInfoProps) => {
+const DropDownInfo = ({
+  triggerContent,
+  items,
+  className,
+}: DropDownInfoProps) => {
   const [open, setOpen] = useState(false);
   const rotate = useRef(0);
   const [Hovering, setHovering] = useState(false);
+  const renderedItems = useMemo(
+    () =>
+      items?.map((item, i) => (
+        <Item
+          key={i}
+          {...item}
+          parName={item.parName}
+          parContent={item.parContent}
+        />
+      )),
+    [items],
+  );
 
   const HandelClick = () => {
     setOpen(!open);
@@ -30,14 +48,15 @@ const DropDownInfo = ({ triggerContent, items }: DropDownInfoProps) => {
   useEffect(() => {
     Hovering
       ? (rotate.current = open ? 90 : 0)
-      : (rotate.current = open ? -45 : 135);
+      : (rotate.current = open ? -45 : 45);
   }, [Hovering]);
 
-  {
-    /*TODO: Add a animation for onMouseEnter;*/
-  }
   return (
-    <div className="bg-gray-700 border-4 border-zinc-950 inborder-dark z-0">
+    <div
+      className={
+        "bg-gray-800 border-4 border-zinc-950 inborder-dark z-0 " + className
+      }
+    >
       <div
         role="button"
         className={`py-3 px-4 w-full flex justify-between items-center space-x-1 text-white cursor-pointer
@@ -49,15 +68,7 @@ const DropDownInfo = ({ triggerContent, items }: DropDownInfoProps) => {
         <span className="h-full text-center text-2xl">{triggerContent}</span>
         <FaTriangle size={30} rotate={String(rotate.current)} />
       </div>
-      <ItemsWrapper open={open}>
-        {items?.map((item, index) => (
-          <Item
-            key={index}
-            parName={item.parName}
-            parContent={item.parContent}
-          />
-        ))}
-      </ItemsWrapper>
+      <ItemsWrapper open={open}>{renderedItems}</ItemsWrapper>
     </div>
   );
 };
@@ -65,8 +76,11 @@ const DropDownInfo = ({ triggerContent, items }: DropDownInfoProps) => {
 const ItemsWrapper = ({ children, open }: ItemsWrapperProps) => {
   return (
     <div
-      className={`px-4 transition-all cursor-default duration-500 ease-in-out scrollbar-thumb-only w-full overflow-auto ${
-        open ? "pb-2 max-h-35 opacity-100" : "max-h-0 opacity-0"
+      role="listbox"
+      className={`mx-[2px] my-0.5 rounded-b-[5px] transition-all bg-gray-700
+      cursor-default duration-500 ease-in-out scrollbar-thumb-only 
+      w-[calc(100% - 4px)] overflow-y-auto space-y-1 ${
+        open ? "pb-1 max-h-35 opacity-100" : "max-h-0 opacity-0"
       }`}
     >
       {children}
@@ -75,10 +89,31 @@ const ItemsWrapper = ({ children, open }: ItemsWrapperProps) => {
 };
 
 const Item = ({ parName, parContent }: ItemProps) => {
+  const [Hovering, setHovering] = useState(false);
+
   return (
-    <div>
-      <span>{parName}</span>
-      <span>{parContent}</span>
+    <div
+      role="listitem"
+      className={
+        "px-2.5 py-1.5 flex space-x-1 w-full justify-between " +
+        "items-center border-1 border-neutral-950 rounded-2xl " +
+        "hover:border-neutral-200 transition-all duration-200"
+      }
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+    >
+      <Circle width={15} height={15} color="#23d" />
+      <span
+        className={
+          "flex items-center font-bold uppercase pr-1.5 border-r-1 text-white transition-border duration-400 " +
+          (Hovering ? "border-white" : "border-neutral-950")
+        }
+      >
+        {parName}
+      </span>
+      <span className="grow-1 text-gray-50 text-end pl-3 ml-1">
+        {parContent}
+      </span>
     </div>
   );
 };
