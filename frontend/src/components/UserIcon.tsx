@@ -4,19 +4,25 @@ type User = {
   firstName: string;
   lastName: string;
   image: string;
+  className?: string;
 };
 
 function UserIcon(userData: User) {
   return (
-    <div className="flex flex-row items-center">
+    <div
+      className={
+        "flex flex-col flex-wrap justify-center space-x-1.5 space-y-1.5 items-center h-full " +
+        userData.className
+      }
+    >
       <img
         src={userData.image}
         alt={`${userData.firstName} ${userData.lastName}`}
-        className="w-45 rounded-full"
+        className="w-30 rounded-full"
       />
       {/*TODO: a Badge with the Name and role below icon*/}
       <DropDownInfo
-        triggerContent={`IHRE DATEN`}
+        triggerContent={`${userData.firstName} ${userData.lastName}`}
         items={[
           {
             parName: "First Name",

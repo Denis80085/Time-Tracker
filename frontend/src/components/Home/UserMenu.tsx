@@ -4,7 +4,11 @@ import AnimatedParagraph from "./AnimatedParagraph";
 import Timer from "./Timer";
 import { startSession, finishSession } from "../../services/WorkSesionService";
 
-function UserMenu() {
+type UserMenuProps = {
+  className?: string;
+};
+
+function UserMenu({ className }: UserMenuProps) {
   const defaultPhrase = "Actions";
   const [Phrase, setPhrase] = useState(defaultPhrase);
   const [PhraseColor, setPhraseColor] = useState("text-white");
@@ -26,8 +30,8 @@ function UserMenu() {
   }
 
   return (
-    <div className="w-1/3 space-y-4">
-      <AnimatedParagraph content={Phrase} speed={30} color={PhraseColor} />
+    <div className={"w-1/3 space-y-4 " + className}>
+      <AnimatedParagraph content={Phrase} speed={40} color={PhraseColor} />
       <Timer
         started={StarTimer}
         paused={PauseTimer}
@@ -41,7 +45,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Arbeit anfangen", "green-500");
+            HandelHover("Starten", "green-500");
           }}
           OnClick={() => {
             setStartTimer(true);
@@ -56,7 +60,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Pause machen", "yellow-300");
+            HandelHover("Pause", "yellow-300");
           }}
           OnClick={() => {
             setStartTimer(false);
@@ -70,7 +74,7 @@ function UserMenu() {
             HandelMouseLeave();
           }}
           OnHover={() => {
-            HandelHover("Arbeit beenden", "red-600");
+            HandelHover("Beenden", "red-600");
           }}
           OnClick={() => {
             setStopTimer(true);

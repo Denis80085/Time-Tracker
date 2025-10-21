@@ -6,7 +6,7 @@ import { useState, useRef, useMemo } from "react";
 type DropDownInfoProps = {
   triggerContent: string;
   items?: ItemProps[];
-  className?: React.HTMLAttributes<void>["className"];
+  className?: string;
 };
 
 type ItemsWrapperProps = {
@@ -102,7 +102,7 @@ const Item = ({ parName, parContent }: ItemProps) => {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      <Circle width={15} height={15} color="#23d" />
+      <Circle width={15} height={15} color={Hovering ? `#dd2286` : `#23d`} />
       <span
         className={
           "flex items-center font-bold uppercase pr-1.5 border-r-1 text-white transition-border duration-400 " +

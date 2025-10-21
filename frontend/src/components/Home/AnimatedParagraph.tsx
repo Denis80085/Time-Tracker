@@ -29,7 +29,10 @@ function AnimatedParagraph({ content, speed, color }: AnimatedParagraphProps) {
   }, [content, speed]);
 
   useEffect(() => {
-    setDisplayedContent(() => content.substring(0, index));
+    let displayedContent = content.substring(0, index);
+    if (displayedContent.length < content.length) displayedContent += "|";
+
+    setDisplayedContent(() => displayedContent);
   }, [index, content]);
 
   return (

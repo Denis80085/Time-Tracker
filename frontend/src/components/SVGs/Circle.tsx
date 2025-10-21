@@ -21,7 +21,13 @@ function Circle({ width, height, color }: CircleProps) {
       ></g>
       <g id="SVGRepo_iconCarrier">
         {" "}
-        <circle cx="8" cy="8" r="8" fill={color}></circle>{" "}
+        <circle
+          cx="8"
+          cy="8"
+          r="8"
+          fill={color}
+          className={"transition-colors duration-300"}
+        ></circle>{" "}
       </g>
     </svg>
   );
