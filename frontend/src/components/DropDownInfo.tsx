@@ -16,7 +16,7 @@ type ItemsWrapperProps = {
 
 type ItemProps = {
   parName: string;
-  parContent: string;
+  parContent: ReactNode;
 };
 
 const DropDownInfo = ({
@@ -59,13 +59,15 @@ const DropDownInfo = ({
     >
       <div
         role="button"
-        className={`py-3 px-4 w-full flex justify-between items-center space-x-1 text-white cursor-pointer
+        className={`py-3 px-4 w-full flex justify-center items-center space-x-1 text-white cursor-pointer
                     ${open && "border-underline-light"}`}
         onClick={HandelClick}
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >
-        <span className="h-full text-center text-2xl">{triggerContent}</span>
+        <span className="h-full text-center text-2xl grow-1">
+          {triggerContent}
+        </span>
         <FaTriangle size={30} rotate={String(rotate.current)} />
       </div>
       <ItemsWrapper open={open}>{renderedItems}</ItemsWrapper>
@@ -103,17 +105,15 @@ const Item = ({ parName, parContent }: ItemProps) => {
       onMouseLeave={() => setHovering(false)}
     >
       <Circle width={15} height={15} color={Hovering ? `#dd2286` : `#23d`} />
-      <span
+      <div
         className={
           "flex items-center font-bold uppercase pr-1.5 border-r-1 text-white transition-border duration-400 " +
           (Hovering ? "border-white" : "border-neutral-950")
         }
       >
         {parName}
-      </span>
-      <span className="grow-1 text-gray-50 text-end pl-3 ml-1">
-        {parContent}
-      </span>
+      </div>
+      <div className="grow-1 text-gray-50 text-end pl-3 ml-1">{parContent}</div>
     </div>
   );
 };

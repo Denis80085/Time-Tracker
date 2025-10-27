@@ -7,12 +7,17 @@ type User = {
   className?: string;
 };
 
-function UserIcon(userData: User) {
+type UserIconProps = {
+  userData: User;
+  className?: string;
+};
+
+function UserIcon({ userData, className }: UserIconProps) {
   return (
     <div
       className={
         "flex flex-col flex-wrap justify-center space-x-1.5 space-y-1.5 items-center h-full " +
-        userData.className
+        className
       }
     >
       <img
@@ -25,36 +30,40 @@ function UserIcon(userData: User) {
         triggerContent={`${userData.firstName} ${userData.lastName}`}
         items={[
           {
-            parName: "First Name",
+            parName: "Vorname",
             parContent: userData.firstName,
           },
           {
-            parName: "Last Name",
+            parName: "Nachname",
             parContent: userData.lastName,
           },
           {
-            parName: "Role",
-            parContent: "Admin",
+            parName: "Job",
+            parContent: "Developer",
+          },
+          {
+            parName: "Unternehmen",
+            parContent: "Unternehmen GmbH",
+          },
+          {
+            parName: "Arbeitsort",
+            parContent: (
+              <p className="text-end">
+                80333 München,
+                <br />
+                Musterstraße 123
+              </p>
+            ),
+          },
+          {
+            parName: "Telefon",
+            parContent: "0123456789",
           },
           {
             parName: "Email",
-            parContent: "example@email.com",
-          },
-          {
-            parName: "Role",
-            parContent: "Admin",
-          },
-          {
-            parName: "Email",
-            parContent: "example@email.com",
-          },
-          {
-            parName: "Role",
-            parContent: "Admin",
-          },
-          {
-            parName: "Email",
-            parContent: "example@email.com",
+            parContent: (
+              <a href="mailto:example@gmail.com">example@gmail.com</a>
+            ),
           },
         ]}
       />

@@ -8,9 +8,11 @@ function Home() {
       <section className="border-solid border-b-2 border-gray-700 p-5 h-65 bg-gray-800 grid grid-cols-2 grid-rows-1">
         <UserIcon
           className="max-w-fit ml-auto mr-0"
-          firstName={"Denis"}
-          lastName={"Ermurachi"}
-          image={"/images/user.webp"}
+          userData={{
+            firstName: "Denis",
+            lastName: "Ermurachi",
+            image: "/images/user.webp",
+          }}
         />
         <UserMenu />
       </section>

@@ -3,7 +3,8 @@ import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
 import { type ReactNode } from "react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
+import { parseISO } from "date-fns";
 
 type RowData = {
   date: string;
@@ -14,16 +15,25 @@ type RowData = {
 };
 
 type DayData = {
+  id: number;
+  started_at: string;
+  ended_at: string;
+  pause: number; //in milliseconds
+  type: number;
+};
+
+type DayFormated = {
+  weekday: string;
   date: string;
   started_at: string;
   ended_at: string;
-  worked: number; //in milliseconds
-  pause: number; //in minutes
   type: DayType;
+  worked: number;
+  pause: number;
 };
 
 const Columns: TableColumn<RowData>[] = [
-  { Name: "Date", Accesor: "date" },
+  { Name: "Datum", Accesor: "date" },
   { Name: "Arbeitszeiten", Accesor: "workhours" },
   { Name: "Arbeitsstunden ohne Pause", Accesor: "worked" },
   { Name: "Pause in minuten", Accesor: "pause" },
@@ -93,13 +103,38 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
   }
 };
 
-function WeekOverView() {
-  const [daysData, setDaysData] = useState<DayData[]>([]);
+const FormatDay = (dayToFormate: DayData) => {
+  const dateStarted = parseISO(dayToFormate.started_at);
+  const dateEnded = parseISO(dayToFormate.ended_at);
 
-  const workedHours = useMemo(
-    () => daysData.reduce((acc, day) => acc + day.worked, 0),
-    [daysData],
-  );
+  let formated: DayFormated = {
+    weekday: Intl.DateTimeFormat("de-DE", {
+      weekday: "short",
+    }).format(dateStarted),
+    date: Intl.DateTimeFormat("de-DE", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(dateStarted),
+    started_at: Intl.DateTimeFormat("de-DE", {
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(dateStarted),
+    ended_at: Intl.DateTimeFormat("de-DE", {
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(dateEnded),
+    type: dayToFormate.type,
+    worked: dateEnded.getTime() - dateStarted.getTime() - dayToFormate.pause,
+    pause: dayToFormate.pause,
+  };
+
+  return formated;
+};
+
+function WeekOverView() {
+  const [daysFormated, setDaysFormated] = useState<DayFormated[]>([]);
+  const [totalWorked, setTotalWorked] = useState(0);
 
   useEffect(() => {
     fetch("https://www.ttrack.com/lweek")
@@ -107,21 +142,24 @@ function WeekOverView() {
         return res.json();
       })
       .then((data: DayData[]) => {
-        setDaysData(data);
+        let daysFormated: DayFormated[] = data.map((day) => FormatDay(day));
+        setDaysFormated(daysFormated);
 
-        let TotalWorkedMS = 0;
-        data.forEach((day) => {
-          TotalWorkedMS += day.worked;
+        let msWorkedInTotal = 0;
+        daysFormated.forEach((day) => {
+          msWorkedInTotal += day.worked;
         });
+
+        setTotalWorked(msWorkedInTotal);
       });
   }, []);
 
-  const rowsData = daysData.map((day) => {
+  const rowsData = daysFormated.map((day) => {
     return {
-      date: day.date,
+      date: `${day.weekday}, ${day.date}`,
       workhours: day.started_at + " - " + day.ended_at,
       worked: msToWorkTime(day.worked),
-      pause: day.pause / 1000 / 60,
+      pause: Math.round(day.pause / 1000 / 60),
       state: dayTypeToBadgeVariant(day.type),
     };
   });
@@ -143,7 +181,7 @@ function WeekOverView() {
           Gesamt Arbeitsstunden:
         </p>
         <Badge
-          text={msToWorkTime(workedHours)}
+          text={msToWorkTime(totalWorked)}
           size={"large"}
           variant={"green"}
         />
