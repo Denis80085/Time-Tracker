@@ -137,7 +137,9 @@ function WeekOverView() {
   const [totalWorked, setTotalWorked] = useState(0);
 
   useEffect(() => {
-    fetch("https://www.ttrack.com/lweek")
+    fetch(
+      "https://www.ttrack.com/week?start=2025-08-25&end=2025-08-29T12:35:00Z",
+    )
       .then((res) => {
         return res.json();
       })

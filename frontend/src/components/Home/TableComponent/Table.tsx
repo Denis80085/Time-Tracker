@@ -11,7 +11,7 @@ function Table<T extends object>({ Columns, Rows }: TableProps<T>) {
       <thead className="bg-gray-900 text-white h-1/9  text-2xl">
         <tr>
           {Columns.map((column, index) => (
-            <th className="relative" key={index}>
+            <th className="relative py-3" key={index}>
               {column.Name}
               {index < Columns.length - 1 && (
                 <div className="absolute right-0 top-[10%] h-[80%] w-1 border-l border-white"></div>
@@ -27,7 +27,7 @@ function Table<T extends object>({ Columns, Rows }: TableProps<T>) {
             key={Rindex}
           >
             {Columns.map((column, Cindex) => (
-              <td className="relative" key={Cindex}>
+              <td className="relative py-2.5" key={Cindex}>
                 {column.Render != null
                   ? column.Render(row)
                   : String(row[column.Accesor!])}

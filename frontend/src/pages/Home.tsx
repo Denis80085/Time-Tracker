@@ -17,7 +17,7 @@ function Home() {
         <UserMenu />
       </section>
       {/*Latest sesions. */}
-      <section className="h-1/2 min-h-50 mt-20">
+      <section className="min-h-50 mt-20">
         {/*<Table Columns={Columns} Rows={Rows} />*/}
         <WeekOverView />
       </section>
