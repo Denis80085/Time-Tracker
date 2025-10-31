@@ -5,6 +5,7 @@ import Badge from "../Badge.tsx";
 import { type ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { parseISO } from "date-fns";
+import DateControl from "../DateControl.tsx";
 
 type RowData = {
   date: string;
@@ -133,7 +134,7 @@ const FormatDay = (dayToFormate: DayData) => {
 };
 
 function WeekOverView() {
-  const [daysFormated, setDaysFormated] = useState<DayFormated[]>([]);
+  const [daysFormated, setDaysFormated] = useState<DayFormated[]>([]); //TODO: custom hook useDaysFormated
   const [totalWorked, setTotalWorked] = useState(0);
 
   useEffect(() => {
@@ -173,6 +174,7 @@ function WeekOverView() {
       scrollbar-thumb-only overflow-auto"
     >
       <div className="flex justify-between items-end mb-3">
+        <DateControl />
         <h1 className="text-5xl text-white text-center w-full">
           Wochenübersicht
         </h1>
