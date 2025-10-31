@@ -1,27 +1,31 @@
 import type { ReactNode, FC } from "react";
 import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "../utils/helpers.ts";
+import { useState } from "react";
 
-const extendButtonVariants = cva("flex items-center justify-center", {
-  variants: {
-    color: {
-      red: "bg-red-400/10 text-red-400",
-      yellow: "bg-yellow-400/10 text-yellow-500",
-      green: "bg-green-400/10 text-green-400",
-      blue: "bg-blue-400/10 text-blue-400",
-      indigo: "bg-indigo-400/10 text-indigo-400",
-      gray: "bg-gray-400/10 text-gray-400",
+const extendButtonVariants = cva(
+  "flex items-center justify-center transition-all duration-200 cursor-pointer",
+  {
+    variants: {
+      color: {
+        red: "bg-red-800",
+        yellow: "bg-yellow-800",
+        green: "bg-green-800",
+        blue: "bg-blue-800",
+        indigo: "bg-indigo-800",
+        gray: "bg-gray-900",
+      },
+      extend_to: {
+        left: "rounded-r-md",
+        right: "rounded-l-md flex-row-reverse",
+      },
     },
-    extend_to: {
-      right: "",
-      left: "",
+    defaultVariants: {
+      color: "gray",
+      extend_to: "left",
     },
   },
-  defaultVariants: {
-    color: "red",
-    extend_to: "left",
-  },
-});
+);
 
 interface ExtendButtonProps extends VariantProps<typeof extendButtonVariants> {
   content?: ReactNode;
@@ -34,12 +38,25 @@ const ExtendButton: FC<ExtendButtonProps> = ({
   extend_to,
   className,
 }) => {
+  const [hovering, setHovering] = useState(false);
   return (
     <div
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
       role="button"
-      className={`${cn(extendButtonVariants({ color, extend_to }))} ${className}`}
+      className={` ${cn(extendButtonVariants({ color, extend_to }))} ${className}`}
     >
+      <div
+        className={
+          (hovering ? "w-1.5" : "w-0") + " transition-[width] ease duration-150"
+        }
+      ></div>
       {content}
+      <div
+        className={
+          (hovering ? "w-0" : "w-1.5") + " transition-[width] ease duration-150"
+        }
+      ></div>
     </div>
   );
 };
