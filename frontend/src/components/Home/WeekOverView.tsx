@@ -3,9 +3,8 @@ import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
 import { type ReactNode } from "react";
-import { useEffect, useState } from "react";
-import { parseISO } from "date-fns";
 import DateControl from "../DateControl.tsx";
+import { useWeek } from "../../hooks/useWeek.ts";
 
 type RowData = {
   date: string;
@@ -13,24 +12,6 @@ type RowData = {
   worked: string;
   pause: number;
   state: ReactNode;
-};
-
-type DayData = {
-  id: number;
-  started_at: string;
-  ended_at: string;
-  pause: number; //in milliseconds
-  type: number;
-};
-
-type DayFormated = {
-  weekday: string;
-  date: string;
-  started_at: string;
-  ended_at: string;
-  type: DayType;
-  worked: number;
-  pause: number;
 };
 
 const Columns: TableColumn<RowData>[] = [
@@ -104,60 +85,11 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
   }
 };
 
-const FormatDay = (dayToFormate: DayData) => {
-  const dateStarted = parseISO(dayToFormate.started_at);
-  const dateEnded = parseISO(dayToFormate.ended_at);
-
-  let formated: DayFormated = {
-    weekday: Intl.DateTimeFormat("de-DE", {
-      weekday: "short",
-    }).format(dateStarted),
-    date: Intl.DateTimeFormat("de-DE", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(dateStarted),
-    started_at: Intl.DateTimeFormat("de-DE", {
-      hour: "numeric",
-      minute: "2-digit",
-    }).format(dateStarted),
-    ended_at: Intl.DateTimeFormat("de-DE", {
-      hour: "numeric",
-      minute: "2-digit",
-    }).format(dateEnded),
-    type: dayToFormate.type,
-    worked: dateEnded.getTime() - dateStarted.getTime() - dayToFormate.pause,
-    pause: dayToFormate.pause,
-  };
-
-  return formated;
-};
-
 function WeekOverView() {
-  const [daysFormated, setDaysFormated] = useState<DayFormated[]>([]); //TODO: custom hook useDaysFormated
-  const [totalWorked, setTotalWorked] = useState(0);
+  console.log("rendered");
+  const [currentWeek, setWeek] = useWeek("2025-08-25", "2025-08-30");
 
-  useEffect(() => {
-    fetch(
-      "https://www.ttrack.com/week?start=2025-08-25&end=2025-08-29T12:35:00Z",
-    )
-      .then((res) => {
-        return res.json();
-      })
-      .then((data: DayData[]) => {
-        let daysFormated: DayFormated[] = data.map((day) => FormatDay(day));
-        setDaysFormated(daysFormated);
-
-        let msWorkedInTotal = 0;
-        daysFormated.forEach((day) => {
-          msWorkedInTotal += day.worked;
-        });
-
-        setTotalWorked(msWorkedInTotal);
-      });
-  }, []);
-
-  const rowsData = daysFormated.map((day) => {
+  const rowsData = currentWeek.map((day) => {
     return {
       date: `${day.weekday}, ${day.date}`,
       workhours: day.started_at + " - " + day.ended_at,
@@ -165,6 +97,11 @@ function WeekOverView() {
       pause: Math.round(day.pause / 1000 / 60),
       state: dayTypeToBadgeVariant(day.type),
     };
+  });
+
+  let totalWorked = 0;
+  currentWeek.forEach((day) => {
+    totalWorked += day.worked;
   });
 
   return (
