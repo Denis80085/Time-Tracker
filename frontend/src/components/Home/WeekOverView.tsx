@@ -87,7 +87,7 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
 
 function WeekOverView() {
   console.log("rendered");
-  const [currentWeek, setWeek] = useWeek("2025-08-25", "2025-08-30");
+  const [currentWeek, setWeek, isLoading] = useWeek("2025-08-25", "2025-08-30");
 
   const rowsData = currentWeek.map((day) => {
     return {
@@ -104,6 +104,10 @@ function WeekOverView() {
     totalWorked += day.worked;
   });
 
+  if (isLoading) {
+    return <p>Loading...</p>; //TODO: Loading Component
+  }
+
   return (
     <div
       className="w-full h-full px-5 py-3 my-4 flex flex-col
@@ -111,7 +115,10 @@ function WeekOverView() {
       scrollbar-thumb-only overflow-auto"
     >
       <div className="flex justify-between items-end mb-3">
-        <DateControl />
+        <DateControl
+          date={"none"}
+          onRightClick={() => setWeek("2025-09-01", "2025-09-07")}
+        />
         <h1 className="text-5xl text-white text-center w-full">
           Wochenübersicht
         </h1>

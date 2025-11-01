@@ -1,6 +1,7 @@
 import DayType from "../enums/DayType.ts";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { parseISO } from "date-fns";
+import { delay } from "msw";
 
 type DayFormated = {
   weekday: string;
@@ -58,26 +59,42 @@ async function fetchWeek(from: string, to: string) {
       daysFormated = data.map((day) => FormatDay(day));
     });
 
+  await delay(1500);
   return daysFormated;
 }
 
 function useWeek(
   from: string,
   to: string,
-): [DayFormated[], (from: string, to: string) => void] {
+): [DayFormated[], (from: string, to: string) => void, boolean] {
   const [current, setCurrent] = useState<DayFormated[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const setWeek = (newFrom: string, newTo: string) => {
-    fetchWeek(newFrom, newTo).then((days) => {
+  const FetchAndSet = useCallback(async (f: string, t: string) => {
+    setLoading(true);
+
+    try {
+      const days = await fetchWeek(f, t);
       setCurrent(days);
-    });
-  };
-
-  useEffect(() => {
-    setWeek(from, to);
+    } catch (e) {
+      console.error(e);
+      setCurrent([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return [current, setWeek];
+  useEffect(() => {
+    FetchAndSet(from, to).catch((e) => {
+      console.error(e);
+    });
+  }, []);
+
+  const setWeek = async (newFrom: string, newTo: string) => {
+    await FetchAndSet(newFrom, newTo);
+  };
+
+  return [current, setWeek, loading];
 }
 
 export { useWeek };

@@ -30,9 +30,11 @@ const extendButtonVariants = cva(
 interface ExtendButtonProps extends VariantProps<typeof extendButtonVariants> {
   content?: ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
 const ExtendButton: FC<ExtendButtonProps> = ({
+  onClick,
   content,
   color,
   extend_to,
@@ -44,6 +46,7 @@ const ExtendButton: FC<ExtendButtonProps> = ({
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       role="button"
+      onClick={onClick}
       className={` ${cn(extendButtonVariants({ color, extend_to }))} ${className}`}
     >
       <div
