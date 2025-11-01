@@ -59,8 +59,16 @@ async function fetchWeek(from: string, to: string) {
       daysFormated = data.map((day) => FormatDay(day));
     });
 
-  await delay(1500);
+  await delay(300);
   return daysFormated;
+}
+
+function storeWeek(storageKey: string, week: DayFormated[]) {
+  localStorage.setItem(storageKey, JSON.stringify(week));
+}
+
+function getWeekFromStorage(storageKey: string) {
+  return JSON.parse(localStorage.getItem(storageKey) || "[]");
 }
 
 function useWeek(
@@ -69,12 +77,22 @@ function useWeek(
 ): [DayFormated[], (from: string, to: string) => void, boolean] {
   const [current, setCurrent] = useState<DayFormated[]>([]);
   const [loading, setLoading] = useState(false);
+  const storageKey = `w_${from}_${to}`;
 
   const FetchAndSet = useCallback(async (f: string, t: string) => {
     setLoading(true);
 
+    const week = getWeekFromStorage(storageKey);
+
+    if (week.length > 0) {
+      setCurrent(week);
+      setLoading(false);
+      return;
+    }
+
     try {
       const days = await fetchWeek(f, t);
+      storeWeek(storageKey, days);
       setCurrent(days);
     } catch (e) {
       console.error(e);
@@ -91,6 +109,7 @@ function useWeek(
   }, []);
 
   const setWeek = async (newFrom: string, newTo: string) => {
+    localStorage.removeItem(storageKey);
     await FetchAndSet(newFrom, newTo);
   };
 

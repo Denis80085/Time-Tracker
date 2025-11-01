@@ -100,12 +100,16 @@ function WeekOverView() {
   });
 
   let totalWorked = 0;
-  currentWeek.forEach((day) => {
-    totalWorked += day.worked;
-  });
+  let date = "nothing yet";
 
   if (isLoading) {
     return <p>Loading...</p>; //TODO: Loading Component
+  } else if (currentWeek.length > 0) {
+    currentWeek.forEach((day) => {
+      totalWorked += day.worked;
+    });
+
+    date = `${currentWeek[0].date} - ${currentWeek[currentWeek.length - 1].date}`;
   }
 
   return (
@@ -116,8 +120,9 @@ function WeekOverView() {
     >
       <div className="flex justify-between items-end mb-3">
         <DateControl
-          date={"none"}
+          date={date}
           onRightClick={() => setWeek("2025-09-01", "2025-09-07")}
+          onLeftClick={() => setWeek("2025-08-25", "2025-08-30")}
         />
         <h1 className="text-5xl text-white text-center w-full">
           Wochenübersicht
