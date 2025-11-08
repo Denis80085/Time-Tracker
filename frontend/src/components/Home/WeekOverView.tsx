@@ -2,7 +2,7 @@ import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
-import { type ReactNode } from "react";
+import { type ReactNode, useCallback, useRef } from "react";
 import DateControl from "../DateControl.tsx";
 import { useWeek } from "../../hooks/useWeek.ts";
 
@@ -88,8 +88,9 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
 function WeekOverView() {
   console.log("rendered");
   const [currentWeek, setWeek, isLoading] = useWeek("2025-08-25", "2025-08-30");
+  const date = useRef<string>("nothing yet");
 
-  const rowsData = currentWeek.map((day) => {
+  const rowsData: RowData[] = currentWeek.map((day) => {
     return {
       date: `${day.weekday}, ${day.date}`,
       workhours: day.started_at + " - " + day.ended_at,
@@ -99,28 +100,36 @@ function WeekOverView() {
     };
   });
 
-  let totalWorked = 0;
-  let date = "nothing yet";
+  const totalWorked = useRef(0);
 
-  if (isLoading) {
-    return <p>Loading...</p>; //TODO: Loading Component
-  } else if (currentWeek.length > 0) {
-    currentWeek.forEach((day) => {
-      totalWorked += day.worked;
-    });
+  if (!isLoading) {
+    if (currentWeek.length > 0) {
+      totalWorked.current = 0;
+      currentWeek.forEach((day) => {
+        totalWorked.current += day.worked;
+      });
 
-    date = `${currentWeek[0].date} - ${currentWeek[currentWeek.length - 1].date}`;
+      date.current = `${currentWeek[0].date} - ${currentWeek[currentWeek.length - 1].date}`;
+    }
   }
 
   return (
     <div
       className="w-full h-full px-5 py-3 my-4 flex flex-col
       bg-gray-500 border-3 border-gray-700
-      scrollbar-thumb-only overflow-auto"
+      scrollbar-thumb-only overflow-auto relative"
     >
-      <div className="flex justify-between items-end mb-3">
+      <div
+        className={
+          isLoading
+            ? "absolute top-0 left-0 w-full h-full bg-gray-900 opacity-50 z-100 loader-blue block"
+            : "hidden"
+        }
+      />
+
+      <div className="flex justify-between items-end mb-3 z-10">
         <DateControl
-          date={date}
+          date={date.current}
           onRightClick={() => setWeek("2025-09-01", "2025-09-07")}
           onLeftClick={() => setWeek("2025-08-25", "2025-08-30")}
         />
@@ -134,7 +143,7 @@ function WeekOverView() {
           Gesamt Arbeitsstunden:
         </p>
         <Badge
-          text={msToWorkTime(totalWorked)}
+          text={msToWorkTime(totalWorked.current)}
           size={"large"}
           variant={"green"}
         />

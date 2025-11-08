@@ -6,7 +6,13 @@ module.exports = {
     extend: {},
   },
   plugins: [
-    plugin(function ({ matchUtilities, theme }) {
+    plugin(function ({ matchUtilities, theme, addBase }) {
+      addBase({
+        "@keyframes l3": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+      });
       matchUtilities(
         {
           inborder: (value) => {
@@ -50,11 +56,42 @@ module.exports = {
               },
             };
           },
+          loader: (value) => {
+            const [color, val] = value.split("-");
+            return {
+              position: "relative",
+              "&::before": {
+                content: "''",
+                position: "absolute",
+                width: "5em",
+                height: "5em",
+                left: "calc(50% - 2.5em)",
+                top: "calc(50% - 2.5em)",
+                padding: "8px",
+                "aspect-ratio": 1,
+                "border-radius": "50%",
+                background: `${theme(`colors.${color}.${val}`)}`,
+                "--_m":
+                  " conic-gradient(#0000 10%,#000), linear-gradient(#000 0 0) content-box;",
+                "-webkit-mask": "var(--_m)",
+                mask: "var(--_m)",
+                "-webkit-mask-composite": "source-out",
+                "mask-composite": "subtract",
+                animation: "l3 1s infinite linear",
+              },
+            };
+          },
         },
         {
           values: {
             dark: "gray-900",
             light: "gray-200",
+            red: "red-500",
+            yellow: "yellow-500",
+            green: "green-400",
+            blue: "blue-400",
+            indigo: "indigo-500",
+            gray: "gray-500",
           },
         }, // Add more combos as needed
       );

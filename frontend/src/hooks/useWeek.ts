@@ -59,7 +59,7 @@ async function fetchWeek(from: string, to: string) {
       daysFormated = data.map((day) => FormatDay(day));
     });
 
-  await delay(300);
+  await delay(50);
   return daysFormated;
 }
 
@@ -106,7 +106,7 @@ function useWeek(
     FetchAndSet(from, to).catch((e) => {
       console.error(e);
     });
-  }, []);
+  }, [from, to, FetchAndSet]);
 
   const setWeek = async (newFrom: string, newTo: string) => {
     localStorage.removeItem(storageKey);
