@@ -2,7 +2,7 @@ import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
-import { type ReactNode, useCallback, useRef } from "react";
+import { type ReactNode, useRef } from "react";
 import DateControl from "../DateControl.tsx";
 import { useWeek } from "../../hooks/useWeek.ts";
 
@@ -86,7 +86,6 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
 };
 
 function WeekOverView() {
-  console.log("rendered");
   const [currentWeek, setWeek, isLoading] = useWeek("2025-08-25", "2025-08-30");
   const date = useRef<string>("nothing yet");
 
@@ -130,7 +129,7 @@ function WeekOverView() {
       <div className="flex justify-between items-end mb-3 z-10">
         <DateControl
           date={date.current}
-          onRightClick={() => setWeek("2025-09-01", "2025-09-07")}
+          onRightClick={() => setWeek("2025-09-01", "2025-09-08")}
           onLeftClick={() => setWeek("2025-08-25", "2025-08-30")}
         />
         <h1 className="text-5xl text-white text-center w-full">

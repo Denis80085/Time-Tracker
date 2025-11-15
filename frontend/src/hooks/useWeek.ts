@@ -52,14 +52,51 @@ const FormatDay = (dayToFormate: DayData) => {
 
 async function fetchWeek(from: string, to: string) {
   let daysFormated: DayFormated[] = [];
+  const from_date = new Date(from);
+  const to_date = new Date(to);
+
+  const diffTime = Math.abs(to_date - from_date);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+  for (let i = 0; i < diffDays; i++) {
+    daysFormated.push({
+      weekday: Intl.DateTimeFormat("de-DE", { weekday: "short" }).format(
+        from_date,
+      ),
+      date: Intl.DateTimeFormat("de-DE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(from_date),
+      started_at: "00:00",
+      ended_at: "00:00",
+      type: DayType.UNKNOWN,
+      worked: 0,
+      pause: 0,
+    });
+
+    from_date.setDate(from_date.getDate() + 1);
+  }
 
   await fetch(`https://www.ttrack.com/week?start=${from}&end=${to}T23:59:59Z`)
     .then((res) => res.json())
     .then((data: DayData[]) => {
-      daysFormated = data.map((day) => FormatDay(day));
+      // daysFormated = data.map((day) => FormatDay(day));
+
+      data.forEach((day) => {
+        const formated = FormatDay(day);
+
+        let i = daysFormated.findIndex((d) => d.date === formated.date);
+        if (i !== -1) {
+          daysFormated[i].type = formated.type;
+          daysFormated[i].started_at = formated.started_at;
+          daysFormated[i].ended_at = formated.ended_at;
+          daysFormated[i].pause = formated.pause;
+          daysFormated[i].worked = formated.worked;
+        }
+      });
     });
 
-  await delay(50);
   return daysFormated;
 }
 
@@ -74,7 +111,7 @@ function getWeekFromStorage(storageKey: string) {
 function useWeek(
   from: string,
   to: string,
-): [DayFormated[], (from: string, to: string) => void, boolean] {
+): [DayFormated[], (from: string, to: string) => Promise<void>, boolean] {
   const [current, setCurrent] = useState<DayFormated[]>([]);
   const [loading, setLoading] = useState(false);
   const storageKey = `w_${from}_${to}`;
