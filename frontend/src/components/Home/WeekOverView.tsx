@@ -85,21 +85,35 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
   }
 };
 
+function weekStartFromOffset(date: Date, offset: number) {
+  const d = new Date(date);
+  const day = d.getDay(); // 0..6 (Sun..Sat)
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+  const start = new Date(d);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(diff + offset * 7);
+  return start;
+}
+
 function WeekOverView() {
-  const [currentWeek, setWeek, isLoading] = useWeek("2025-08-25", "2025-08-30");
   const date = useRef<string>("nothing yet");
-
-  const rowsData: RowData[] = currentWeek.map((day) => {
-    return {
-      date: `${day.weekday}, ${day.date}`,
-      workhours: day.started_at + " - " + day.ended_at,
-      worked: msToWorkTime(day.worked),
-      pause: Math.round(day.pause / 1000 / 60),
-      state: dayTypeToBadgeVariant(day.type),
-    };
-  });
-
   const totalWorked = useRef(0);
+  const [currentWeek, setWeek, isLoading] = useWeek();
+  const todayRef = useRef(new Date());
+  const weekOffset = useRef(0);
+
+  const newWeek = async (newOffset = 0) => {
+    weekOffset.current = newOffset;
+    const weekStart = weekStartFromOffset(todayRef.current, weekOffset.current);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    try {
+      await setWeek(weekStart.toISOString(), weekEnd.toISOString());
+      console.log(weekEnd.toISOString(), weekStart.toISOString() + " loaded");
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   if (!isLoading) {
     if (currentWeek.length > 0) {
@@ -111,6 +125,16 @@ function WeekOverView() {
       date.current = `${currentWeek[0].date} - ${currentWeek[currentWeek.length - 1].date}`;
     }
   }
+
+  const rowsData: RowData[] = currentWeek.map((day) => {
+    return {
+      date: `${day.weekday}, ${day.date}`,
+      workhours: day.started_at + " - " + day.ended_at,
+      worked: msToWorkTime(day.worked),
+      pause: Math.round(day.pause / 1000 / 60),
+      state: dayTypeToBadgeVariant(day.type),
+    };
+  });
 
   return (
     <div
@@ -129,8 +153,8 @@ function WeekOverView() {
       <div className="flex justify-between items-end mb-3 z-10">
         <DateControl
           date={date.current}
-          onRightClick={() => setWeek("2025-09-01", "2025-09-08")}
-          onLeftClick={() => setWeek("2025-08-25", "2025-08-30")}
+          onRightClick={() => newWeek(weekOffset.current + 1)}
+          onLeftClick={() => newWeek(weekOffset.current - 1)}
         />
         <h1 className="text-5xl text-white text-center w-full">
           Wochenübersicht

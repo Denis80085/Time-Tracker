@@ -78,7 +78,9 @@ async function fetchWeek(from: string, to: string) {
     from_date.setDate(from_date.getDate() + 1);
   }
 
-  await fetch(`https://www.ttrack.com/week?start=${from}&end=${to}T23:59:59Z`)
+  await fetch(
+    `https://www.ttrack.com/week?start=${from.split("T")[0]}&end=${to.split("T")[0]}T23:59:59Z`,
+  )
     .then((res) => res.json())
     .then((data: DayData[]) => {
       // daysFormated = data.map((day) => FormatDay(day));
@@ -109,8 +111,8 @@ function getWeekFromStorage(storageKey: string) {
 }
 
 function useWeek(
-  from: string,
-  to: string,
+  from: string = "",
+  to: string = "",
 ): [DayFormated[], (from: string, to: string) => Promise<void>, boolean] {
   const [current, setCurrent] = useState<DayFormated[]>([]);
   const [loading, setLoading] = useState(false);
@@ -126,7 +128,6 @@ function useWeek(
       setLoading(false);
       return;
     }
-
     try {
       const days = await fetchWeek(f, t);
       storeWeek(storageKey, days);
@@ -152,5 +153,5 @@ function useWeek(
 
   return [current, setWeek, loading];
 }
-
+// @ts-ignore
 export { useWeek };
