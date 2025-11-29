@@ -164,13 +164,15 @@ function WeekOverView() {
         }
       />
 
-      <div className="flex justify-between items-end mb-3 z-10">
-        <DateControl
-          date={date.current}
-          onRightClick={() => newWeek(weekOffset.current + 1)}
-          onLeftClick={() => newWeek(weekOffset.current - 1)}
-        />
-        <h1 className="text-5xl text-white text-center w-full">
+      <div className="flex justify-between items-end mb-3 z-10 relative">
+        <div className="z-30">
+          <DateControl
+            date={date.current}
+            onRightClick={() => newWeek(weekOffset.current + 1)}
+            onLeftClick={() => newWeek(weekOffset.current - 1)}
+          />
+        </div>
+        <h1 className="text-5xl text-white text-center w-full absolute">
           Wochenübersicht
         </h1>
       </div>
