@@ -128,6 +128,7 @@ function useWeek(
       setLoading(false);
       return;
     }
+
     try {
       const days = await fetchWeek(f, t);
       storeWeek(storageKey, days);

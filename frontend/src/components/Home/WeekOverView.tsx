@@ -2,7 +2,7 @@ import DayType from "../../enums/DayType.ts";
 import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, useRef, useEffect } from "react";
 import DateControl from "../DateControl.tsx";
 import { useWeek } from "../../hooks/useWeek.ts";
 
@@ -95,25 +95,39 @@ function weekStartFromOffset(date: Date, offset: number) {
   return start;
 }
 
+const storeData = (key: string, data: any) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
+const getData = (key: string) => {
+  return JSON.parse(localStorage.getItem(key) || "{}");
+};
+
 function WeekOverView() {
   const date = useRef<string>("nothing yet");
   const totalWorked = useRef(0);
-  const [currentWeek, setWeek, isLoading] = useWeek();
   const todayRef = useRef(new Date());
   const weekOffset = useRef(0);
+  const [currentWeek, setWeek, isLoading] = useWeek();
 
+  const offsetStoreKey = "weekOffset";
   const newWeek = async (newOffset = 0) => {
     weekOffset.current = newOffset;
+    storeData(offsetStoreKey, weekOffset.current);
     const weekStart = weekStartFromOffset(todayRef.current, weekOffset.current);
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
     try {
       await setWeek(weekStart.toISOString(), weekEnd.toISOString());
-      console.log(weekEnd.toISOString(), weekStart.toISOString() + " loaded");
     } catch (e) {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    const offset = getData(offsetStoreKey) || 0;
+    newWeek(offset).catch(console.error);
+  }, []);
 
   if (!isLoading) {
     if (currentWeek.length > 0) {
