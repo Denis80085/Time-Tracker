@@ -77,7 +77,7 @@ function Timer({ started, paused, stoped, border }: TimerProps) {
   return (
     <div
       className={
-        "flex justify-center items-center space-x-2 w-fit mx-auto p-2 " +
+        "flex justify-center items-center space-x-2 w-full p-2 " +
         `rounded-2xl border-2 ${border}` +
         " text-white text-3xl text-center transition-all duration-200"
       }

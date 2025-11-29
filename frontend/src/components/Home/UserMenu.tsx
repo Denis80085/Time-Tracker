@@ -29,31 +29,9 @@ function UserMenu({ className }: UserMenuProps) {
     SetTimerBorderColor("border-amber-100");
   }
 
-  return (
-    <div className={"w-1/3 space-y-4 " + className}>
-      <AnimatedParagraph content={Phrase} speed={40} color={PhraseColor} />
-      <Timer
-        started={StarTimer}
-        paused={PauseTimer}
-        stoped={StopTimer}
-        border={TimerBorderColor}
-      />
-      <div className="w-full flex justify-center space-x-1.5">
-        <MenuButton
-          Type="Start"
-          OnMouseLeave={() => {
-            HandelMouseLeave();
-          }}
-          OnHover={() => {
-            HandelHover("Starten", "green-500");
-          }}
-          OnClick={() => {
-            setStartTimer(true);
-            setPauseTimer(false);
-            setStopTimer(false);
-            startSession();
-          }}
-        />
+  const StopButtons = () => {
+    return (
+      <>
         <MenuButton
           Type="Pause"
           OnMouseLeave={() => {
@@ -80,10 +58,59 @@ function UserMenu({ className }: UserMenuProps) {
             setStopTimer(true);
             setPauseTimer(false);
             setStartTimer(false);
-            let id = localStorage.getItem("currentSessionId");
-            if (id) finishSession(id);
           }}
         />
+      </>
+    );
+  };
+
+  const StartButtons = () => {
+    return (
+      <>
+        <MenuButton
+          Type="Start"
+          OnMouseLeave={() => {
+            HandelMouseLeave();
+          }}
+          OnHover={() => {
+            HandelHover("Starten", "green-500");
+          }}
+          OnClick={() => {
+            setStartTimer(true);
+            setPauseTimer(false);
+            setStopTimer(false);
+          }}
+        />
+        <MenuButton
+          Type={"Diverse"}
+          OnHover={() => HandelHover("Sonstiges", "violet-500")}
+          OnMouseLeave={() => {
+            HandelMouseLeave();
+          }}
+          OnClick={() => {}}
+        />
+      </>
+    );
+  };
+
+  return (
+    <div
+      className={
+        "w-1/3 flex flex-wrap items-center justify-center " + className
+      }
+    >
+      <AnimatedParagraph content={Phrase} speed={40} color={PhraseColor} />
+
+      <div className="grid grid-rows-[auto,1fr] grid-cols-[0.5fr] space-y-2 space-x-1.5">
+        <Timer
+          started={StarTimer}
+          paused={PauseTimer}
+          stoped={StopTimer}
+          border={TimerBorderColor}
+        />
+        <div className="flex justify-center items-center px-1 space-x-2">
+          {StarTimer ? StopButtons() : StartButtons()}
+        </div>
       </div>
     </div>
   );
