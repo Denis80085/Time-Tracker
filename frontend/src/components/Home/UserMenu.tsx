@@ -1,8 +1,10 @@
-import MenuButton from "./MenuButton";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import AnimatedParagraph from "./AnimatedParagraph";
 import Timer from "./Timer";
-import { startSession, finishSession } from "../../services/WorkSesionService";
+//import { startSession, finishSession } from "../../services/WorkSesionService";
+import { SwitchProvider } from "../SwitchPad.tsx";
+
+import AnimatedTimerButtons from "./AnimatedTimerButtons.tsx";
 
 type UserMenuProps = {
   className?: string;
@@ -29,70 +31,7 @@ function UserMenu({ className }: UserMenuProps) {
     SetTimerBorderColor("border-amber-100");
   }
 
-  const StopButtons = () => {
-    return (
-      <>
-        <MenuButton
-          Type="Pause"
-          OnMouseLeave={() => {
-            HandelMouseLeave();
-          }}
-          OnHover={() => {
-            HandelHover("Pause", "yellow-300");
-          }}
-          OnClick={() => {
-            setStartTimer(false);
-            setPauseTimer(true);
-            setStopTimer(false);
-          }}
-        />
-        <MenuButton
-          Type="Stop"
-          OnMouseLeave={() => {
-            HandelMouseLeave();
-          }}
-          OnHover={() => {
-            HandelHover("Beenden", "red-600");
-          }}
-          OnClick={() => {
-            setStopTimer(true);
-            setPauseTimer(false);
-            setStartTimer(false);
-          }}
-        />
-      </>
-    );
-  };
-
-  const StartButtons = () => {
-    return (
-      <>
-        <MenuButton
-          Type="Start"
-          OnMouseLeave={() => {
-            HandelMouseLeave();
-          }}
-          OnHover={() => {
-            HandelHover("Starten", "green-500");
-          }}
-          OnClick={() => {
-            setStartTimer(true);
-            setPauseTimer(false);
-            setStopTimer(false);
-          }}
-        />
-        <MenuButton
-          Type={"Diverse"}
-          OnHover={() => HandelHover("Sonstiges", "violet-500")}
-          OnMouseLeave={() => {
-            HandelMouseLeave();
-          }}
-          OnClick={() => {}}
-        />
-      </>
-    );
-  };
-
+  console.log("redering UserMenu");
   return (
     <div
       className={
@@ -100,16 +39,18 @@ function UserMenu({ className }: UserMenuProps) {
       }
     >
       <AnimatedParagraph content={Phrase} speed={40} color={PhraseColor} />
-
-      <div className="grid grid-rows-[auto,1fr] grid-cols-[0.5fr] space-y-2 space-x-1.5">
+      <div className="grid grid-rows-[1fr_1fr] grid-cols-[0.5fr] space-y-2">
         <Timer
           started={StarTimer}
           paused={PauseTimer}
           stoped={StopTimer}
           border={TimerBorderColor}
         />
-        <div className="flex justify-center items-center px-1 space-x-2">
-          {StarTimer ? StopButtons() : StartButtons()}
+
+        <div className="mt-1">
+          <SwitchProvider>
+            <AnimatedTimerButtons />
+          </SwitchProvider>
         </div>
       </div>
     </div>

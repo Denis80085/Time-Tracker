@@ -1,7 +1,6 @@
 import DayType from "../enums/DayType.ts";
 import { useState, useEffect, useCallback } from "react";
 import { parseISO } from "date-fns";
-import { delay } from "msw";
 
 type DayFormated = {
   weekday: string;
