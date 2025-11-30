@@ -4,10 +4,12 @@ import { SwitchPadContext } from "../SwitchPad.tsx";
 import { useContext } from "react";
 
 export default function AnimatedTimerButtons() {
-  const { moveTo } = useContext(SwitchPadContext);
+  const { Swap } = useContext(SwitchPadContext);
 
+  console.log("redering AnimatedTimerButtons");
   return (
     <SwitchPad
+      switchDuration={0.2}
       left={
         <div className="flex justify-center items-center px-1 space-x-2">
           <MenuButton
@@ -22,7 +24,7 @@ export default function AnimatedTimerButtons() {
               // setStartTimer(true);
               // setPauseTimer(false);
               // setStopTimer(false);
-              moveTo(1);
+              Swap();
             }}
           />
           <MenuButton
@@ -63,7 +65,7 @@ export default function AnimatedTimerButtons() {
               // setStopTimer(true);
               // setPauseTimer(false);
               // setStartTimer(false);
-              moveTo(0);
+              Swap();
             }}
           />
         </div>
