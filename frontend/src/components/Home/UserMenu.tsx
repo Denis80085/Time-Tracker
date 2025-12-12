@@ -1,9 +1,9 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import AnimatedParagraph from "./AnimatedParagraph";
 import Timer from "./Timer";
 //import { startSession, finishSession } from "../../services/WorkSesionService";
 import { SwitchProvider } from "../SwitchPad.tsx";
-
+import { TimerContextProvider } from "../../hooks/TimerContext.tsx";
 import AnimatedTimerButtons from "./AnimatedTimerButtons.tsx";
 
 type UserMenuProps = {
@@ -40,18 +40,14 @@ function UserMenu({ className }: UserMenuProps) {
     >
       <AnimatedParagraph content={Phrase} speed={40} color={PhraseColor} />
       <div className="grid grid-rows-[1fr_1fr] grid-cols-[0.5fr] space-y-2">
-        <Timer
-          started={StarTimer}
-          paused={PauseTimer}
-          stoped={StopTimer}
-          border={TimerBorderColor}
-        />
-
-        <div className="mt-1">
-          <SwitchProvider>
-            <AnimatedTimerButtons />
-          </SwitchProvider>
-        </div>
+        <TimerContextProvider>
+          <Timer/>
+          <div className="mt-1">
+            <SwitchProvider>
+              <AnimatedTimerButtons />
+            </SwitchProvider>
+          </div>
+        </TimerContextProvider>
       </div>
     </div>
   );
