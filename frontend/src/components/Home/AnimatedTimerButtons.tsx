@@ -2,9 +2,11 @@ import { SwitchPad } from "../SwitchPad.tsx";
 import MenuButton from "./MenuButton.tsx";
 import { SwitchPadContext } from "../SwitchPad.tsx";
 import { useContext } from "react";
+import { TimerContext } from "../../hooks/TimerContext.tsx";
 
 export default function AnimatedTimerButtons() {
   const { Swap } = useContext(SwitchPadContext);
+  const {startTimer, pauseTimer, stopTimer} = useContext(TimerContext);
 
   console.log("redering AnimatedTimerButtons");
   return (
@@ -25,6 +27,7 @@ export default function AnimatedTimerButtons() {
               // setPauseTimer(false);
               // setStopTimer(false);
               Swap();
+              startTimer();
             }}
           />
           <MenuButton
@@ -51,6 +54,7 @@ export default function AnimatedTimerButtons() {
               // setStartTimer(false);
               // setPauseTimer(true);
               // setStopTimer(false);
+              pauseTimer();
             }}
           />
           <MenuButton
@@ -66,6 +70,7 @@ export default function AnimatedTimerButtons() {
               // setPauseTimer(false);
               // setStartTimer(false);
               Swap();
+              stopTimer();
             }}
           />
         </div>

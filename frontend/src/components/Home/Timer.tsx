@@ -1,18 +1,14 @@
 import TimerBlock from "./TimerBlock";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
+import { TimerContext } from "../../hooks/TimerContext";
 
-type TimerProps = {
-  started: boolean;
-  stoped: boolean;
-  paused: boolean;
-  border: string;
-};
-
-function Timer({ started, paused, stoped, border }: TimerProps) {
+function Timer() {
   const [Seconds, setSeconds] = useState(0);
   const [Minutes, setMinutes] = useState(0);
   const [Hours, setHours] = useState(0);
   const counterRef = useRef<number | null>(null);
+
+  const {started, paused, stoped, border} = useContext(TimerContext)
 
   function OnSixtySeconds() {
     setSeconds(0);
