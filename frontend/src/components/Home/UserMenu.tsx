@@ -14,9 +14,6 @@ function UserMenu({ className }: UserMenuProps) {
   const defaultPhrase = "Actions";
   const [Phrase, setPhrase] = useState(defaultPhrase);
   const [PhraseColor, setPhraseColor] = useState("text-white");
-  const [StarTimer, setStartTimer] = useState(false);
-  const [PauseTimer, setPauseTimer] = useState(false);
-  const [StopTimer, setStopTimer] = useState(false);
   const [TimerBorderColor, SetTimerBorderColor] = useState("border-amber-100");
 
   function HandelHover(Phrase: string, Color: string) {
@@ -41,7 +38,7 @@ function UserMenu({ className }: UserMenuProps) {
       <AnimatedParagraph content={Phrase} speed={40} color={PhraseColor} />
       <div className="grid grid-rows-[1fr_1fr] grid-cols-[0.5fr] space-y-2">
         <TimerContextProvider>
-          <Timer/>
+          <Timer />
           <div className="mt-1">
             <SwitchProvider>
               <AnimatedTimerButtons />

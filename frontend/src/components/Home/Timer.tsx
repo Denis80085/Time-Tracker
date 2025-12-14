@@ -8,7 +8,9 @@ function Timer() {
   const [Hours, setHours] = useState(0);
   const counterRef = useRef<number | null>(null);
 
-  const {started, paused, stoped, border} = useContext(TimerContext)
+  const { started, border } = useContext(TimerContext);
+
+  console.log("redering Timer");
 
   function OnSixtySeconds() {
     setSeconds(0);
@@ -21,10 +23,23 @@ function Timer() {
   }
 
   useEffect(() => {
-    if (!counterRef.current && started) {
-      counterRef.current = window.setInterval(() => {
-        setSeconds((prev) => prev + 1);
-      }, 1000);
+    switch (started) {
+      case 0:
+        if (counterRef.current != null) clearInterval(counterRef.current);
+        counterRef.current = null;
+        setSeconds(0);
+        setMinutes(0);
+        setHours(0);
+        break;
+      case 1:
+        counterRef.current = window.setInterval(() => {
+          setSeconds((prev) => prev + 1);
+        }, 1000);
+        break;
+      case 2:
+        if (counterRef.current != null) clearInterval(counterRef.current);
+        counterRef.current = null;
+        break;
     }
   }, [started]);
 
@@ -46,23 +61,6 @@ function Timer() {
       OnSixtyMinutes();
     }
   }, [Minutes]);
-
-  useEffect(() => {
-    if (counterRef.current != null && paused) {
-      clearInterval(counterRef.current);
-      counterRef.current = null;
-    }
-  }, [paused]);
-
-  useEffect(() => {
-    if (counterRef.current != null && stoped) {
-      clearInterval(counterRef.current);
-      counterRef.current = null;
-    }
-    setSeconds(0);
-    setMinutes(0);
-    setHours(0);
-  }, [stoped]);
 
   useEffect(() => {
     setSeconds(0);
