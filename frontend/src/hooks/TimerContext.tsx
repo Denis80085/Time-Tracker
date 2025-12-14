@@ -6,6 +6,7 @@ type TimerContextProps = {
   startTimer: () => void;
   pauseTimer: () => void;
   stopTimer: () => void;
+  setBorderColor: (color: string) => void;
 };
 
 export const TimerContext = createContext<TimerContextProps>({
@@ -14,6 +15,7 @@ export const TimerContext = createContext<TimerContextProps>({
   startTimer: () => {},
   stopTimer: () => {},
   pauseTimer: () => {},
+  setBorderColor: () => {},
 });
 
 export const TimerContextProvider = ({
@@ -22,6 +24,7 @@ export const TimerContextProvider = ({
   children?: ReactNode;
 }) => {
   const [start, setStart] = useState(0);
+  const [borderColor, setBorderColor] = useState("border-amber-100");
 
   return (
     <TimerContext.Provider
@@ -36,7 +39,8 @@ export const TimerContextProvider = ({
         stopTimer: () => {
           setStart(0);
         },
-        border: "border-amber-100",
+        border: borderColor,
+        setBorderColor: (color: string) => setBorderColor(color),
       }}
     >
       {children}

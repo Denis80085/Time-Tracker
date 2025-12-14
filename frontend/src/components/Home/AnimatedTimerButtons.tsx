@@ -4,37 +4,54 @@ import { SwitchPadContext } from "../SwitchPad.tsx";
 import { useContext } from "react";
 import { TimerContext } from "../../hooks/TimerContext.tsx";
 
-export default function AnimatedTimerButtons() {
-  const { Swap } = useContext(SwitchPadContext);
-  const {startTimer, pauseTimer, stopTimer} = useContext(TimerContext);
+type AnimatedTimerButtonsProps = {
+  onStartHover?: () => void;
+  onStopHover?: () => void;
+  onPauseHover?: () => void;
+  onDiverseHover?: () => void;
+  onUnhover?: () => void;
+};
 
-  console.log("redering AnimatedTimerButtons");
+export default function AnimatedTimerButtons({
+  onStartHover,
+  onStopHover,
+  onPauseHover,
+  onDiverseHover,
+  onUnhover,
+}: AnimatedTimerButtonsProps) {
+  const { Swap } = useContext(SwitchPadContext);
+  const { startTimer, pauseTimer, stopTimer, setBorderColor } =
+    useContext(TimerContext);
+
   return (
     <SwitchPad
-      switchDuration={0.2}
+      switchDuration={0.5}
       left={
         <div className="flex justify-center items-center px-1 space-x-2">
           <MenuButton
             Type="Start"
             OnMouseLeave={() => {
-              // HandelMouseLeave();
+              setBorderColor("border-amber-100");
+              onUnhover && onUnhover();
             }}
             OnHover={() => {
-              // HandelHover("Starten", "green-500");
+              setBorderColor("border-green-500");
+              onStartHover && onStartHover();
             }}
             OnClick={() => {
-              // setStartTimer(true);
-              // setPauseTimer(false);
-              // setStopTimer(false);
               Swap();
               startTimer();
             }}
           />
           <MenuButton
             Type={"Diverse"}
-            OnHover={() => {}} //HandelHover("Sonstiges", "violet-500")}
+            OnHover={() => {
+              setBorderColor("border-violet-500");
+              onDiverseHover && onDiverseHover();
+            }}
             OnMouseLeave={() => {
-              //HandelMouseLeave();
+              setBorderColor("border-amber-100");
+              onUnhover && onUnhover();
             }}
             OnClick={() => {}}
           />
@@ -45,30 +62,28 @@ export default function AnimatedTimerButtons() {
           <MenuButton
             Type="Pause"
             OnMouseLeave={() => {
-              //HandelMouseLeave();
+              setBorderColor("border-amber-100");
+              onUnhover && onUnhover();
             }}
             OnHover={() => {
-              //HandelHover("Pause", "yellow-300");
+              setBorderColor("border-yellow-300");
+              onPauseHover && onPauseHover();
             }}
             OnClick={() => {
-              // setStartTimer(false);
-              // setPauseTimer(true);
-              // setStopTimer(false);
               pauseTimer();
             }}
           />
           <MenuButton
             Type="Stop"
             OnMouseLeave={() => {
-              //HandelMouseLeave();
+              setBorderColor("border-amber-100");
+              onUnhover && onUnhover();
             }}
             OnHover={() => {
-              // HandelHover("Beenden", "red-600");
+              setBorderColor("border-red-600");
+              onStopHover && onStopHover();
             }}
             OnClick={() => {
-              // setStopTimer(true);
-              // setPauseTimer(false);
-              // setStartTimer(false);
               Swap();
               stopTimer();
             }}

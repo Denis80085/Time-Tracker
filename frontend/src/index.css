@@ -5,6 +5,7 @@
 @source inline("text-yellow-300 border-yellow-300");
 @source inline("text-red-600 border-red-600");
 @source inline("text-violet-500 border-violet-500");
+@source inline("text-amber-100 border-amber-100");
 
 @tailwind base;
 @tailwind components;

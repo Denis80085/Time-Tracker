@@ -7,10 +7,7 @@ function Timer() {
   const [Minutes, setMinutes] = useState(0);
   const [Hours, setHours] = useState(0);
   const counterRef = useRef<number | null>(null);
-
   const { started, border } = useContext(TimerContext);
-
-  console.log("redering Timer");
 
   function OnSixtySeconds() {
     setSeconds(0);
