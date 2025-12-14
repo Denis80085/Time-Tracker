@@ -9,8 +9,6 @@ function Timer() {
   const counterRef = useRef<number | null>(null);
   const { started, border } = useContext(TimerContext);
 
-  const {started, paused, stoped, border} = useContext(TimerContext)
-
   function OnSixtySeconds() {
     setSeconds(0);
     setMinutes((prev) => prev + 1);
