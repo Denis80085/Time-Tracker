@@ -107,6 +107,7 @@ export default function AnimatedTimerButtons({
               onStopHover && onStopHover();
             }}
             OnClick={() => {
+              setIsPaused(false);
               Swap();
               stopTimer();
             }}
