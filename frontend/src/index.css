@@ -53,6 +53,17 @@
   }
 }
 
+.date-picker-anchor{
+  position: relative;
+  anchor-name: --dp-anchor;
+}
+
+.dp-grid-position{
+  position: absolute;
+  position-anchor: --dp-anchor;
+  top: anchor(bottom);
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
