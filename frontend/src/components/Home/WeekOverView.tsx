@@ -95,14 +95,6 @@ function weekStartFromOffset(date: Date, offset: number) {
   return start;
 }
 
-const storeData = (key: string, data: any) => {
-  localStorage.setItem(key, JSON.stringify(data));
-};
-
-const getData = (key: string) => {
-  return JSON.parse(localStorage.getItem(key) || "{}");
-};
-
 function WeekOverView() {
   const date = useRef<string>("nothing yet");
   const totalWorked = useRef(0);
@@ -110,10 +102,9 @@ function WeekOverView() {
   const weekOffset = useRef(0);
   const [currentWeek, setWeek, isLoading] = useWeek();
 
-  const offsetStoreKey = "weekOffset";
   const newWeek = async (newOffset = 0) => {
     weekOffset.current = newOffset;
-    storeData(offsetStoreKey, weekOffset.current);
+    //storeData(offsetStoreKey, weekOffset.current);
     const weekStart = weekStartFromOffset(todayRef.current, weekOffset.current);
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
@@ -125,8 +116,7 @@ function WeekOverView() {
   };
 
   useEffect(() => {
-    const offset = getData(offsetStoreKey) || 0;
-    newWeek(offset).catch(console.error);
+    newWeek(weekOffset.current).catch(console.error);
   }, []);
 
   if (!isLoading) {
