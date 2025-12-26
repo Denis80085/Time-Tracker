@@ -1,21 +1,135 @@
-import { useState } from "react";
+import { useState, useMemo, useRef } from "react";
+import ExtendButton from "./ExtendButton.tsx";
+import Arrow from "./SVGs/Arrow.tsx";
+
+type Day = {
+  currentMonth: boolean;
+  date: Date;
+};
+
+const getMonthDays = (month: number, year: number) => {
+  let Grid: Array<Day> = [];
+  const firstDayOfMonth = new Date(year, month, 1);
+
+  const startWeekday = firstDayOfMonth.getDay(); // 0 = Sunday, 1 = Monday...
+
+  // Adjust if you want Monday as first day
+  const normalizedStart = (startWeekday + 6) % 7;
+  const totalCells = 35; // 5 weeks * 7 days
+
+  for (let i = 0; i < totalCells; i++) {
+    const dayOffset = i - normalizedStart;
+    const date = new Date(year, month, dayOffset + 1);
+
+    Grid.push({
+      date: date,
+      currentMonth: date.getMonth() === month,
+    });
+  }
+
+  return Grid;
+};
+
+const DayBlock = (DayData: Day) => {
+  return (
+    <div className="w-10 h-10 flex items-center justify-center hover:bg-gray-800">
+      <span className={DayData.currentMonth ? "text-white" : "text-gray-400"}>
+        {DayData.date.getDate()}
+      </span>
+    </div>
+  );
+};
 
 const DatePicker = () => {
   const [gridVisible, setGridVisible] = useState(false);
+  const Day = useRef(new Date());
+  const [Month, setMonth] = useState(Day.current.getMonth());
+  const [Year, setYear] = useState(Day.current.getFullYear());
+
+  const Grid = useMemo(() => {
+    const Days = getMonthDays(Month, Year);
+
+    return Days.map((day, i) => {
+      return (
+        <DayBlock currentMonth={day.currentMonth} date={day.date} key={i} />
+      );
+    });
+  }, [Month, Year]);
+
+  const FirstRow = () => {
+    return (
+      <>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>Mo</span>
+        </div>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>Di</span>
+        </div>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>Mi</span>
+        </div>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>Do</span>
+        </div>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>Fr</span>
+        </div>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>Sa</span>
+        </div>
+        <div className="w-10 h-10 flex items-center justify-center border-b-1 border-gray-950">
+          <span className={"text-gray-400"}>So</span>
+        </div>
+      </>
+    );
+  };
 
   return (
     <>
       <div
-        className="h-full w-full flex items-center justify-center px-2 cursor-pointer date-picker-anchor"
+        className="h-full w-full flex items-center justify-center px-2 cursor-pointer date-picker-anchor transition-colors duration-250 hover:bg-gray-800"
         onClick={() => setGridVisible(!gridVisible)}
       >
         <span className="text-white text-center">22.12.2025-28.12.2025</span>
       </div>
       <div
-        className={`transition-transform duration-200 origin-top w-44 h-20 bg-red-900 dp-grid-position ${
+        className={`overflow-clip rounded-md border-1 border-zinc-950 transition-transform duration-200 origin-top mt-0.5 bg-gray-900 dp-grid-position ${
           gridVisible ? "transform scale-y-100 " : "transform scale-y-0"
         }`}
-      ></div>
+      >
+        <div className={`grid grid-rows-6 grid-cols-7`}>
+          {FirstRow()}
+          {Grid}
+        </div>
+        <div className="grid grid-cols-[1fr_2fr_1fr] gap-x-2 items-center">
+          <ExtendButton
+            className="hover:bg-gray-800"
+            extend_to="right"
+            content={<Arrow color="white" rotate={0} size={30} />}
+            onClick={() => {
+              Day.current.setMonth(Day.current.getMonth() - 1);
+              setMonth(Day.current.getMonth());
+              setYear(Day.current.getFullYear());
+            }}
+          />
+          <span className="text-white text-center">
+            {Intl.DateTimeFormat("de-DE", {
+              month: "long",
+              year: "numeric",
+            }).format(Day.current)}
+          </span>
+          <ExtendButton
+            className="hover:bg-gray-800"
+            extend_to="left"
+            content={<Arrow color="white" rotate={180} size={30} />}
+            onClick={() => {
+              Day.current.setMonth(Day.current.getMonth() + 1);
+              setMonth(Day.current.getMonth());
+              setYear(Day.current.getFullYear());
+            }}
+          />
+        </div>
+      </div>
     </>
   );
 };

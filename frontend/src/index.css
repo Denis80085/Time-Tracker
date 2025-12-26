@@ -62,6 +62,8 @@
   position: absolute;
   position-anchor: --dp-anchor;
   top: anchor(bottom);
+  left: anchor(center);
+  transform: translate(-50%, 0);
 }
 
 :root {

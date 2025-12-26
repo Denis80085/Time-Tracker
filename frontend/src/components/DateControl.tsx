@@ -18,7 +18,7 @@ function DateControl({ onRightClick, onLeftClick, date }: DateControlProps) {
         className="w-full pr-2 border-1 transition-colors duration-250 border-zinc-950 hover:bg-gray-800"
         content={<Arrow color="white" rotate={0} size={30} />}
       />
-      <div className="h-full w-full border-1 border-zinc-950 transition-colors duration-250 hover:bg-gray-800">
+      <div className="h-full w-full border-1 border-zinc-950">
         <DatePicker />
       </div>
       <ExtendButton
