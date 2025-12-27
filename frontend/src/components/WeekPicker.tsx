@@ -1,10 +1,15 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import ExtendButton from "./ExtendButton.tsx";
 import Arrow from "./SVGs/Arrow.tsx";
 
 type Day = {
   currentMonth: boolean;
   date: Date;
+};
+
+type WeekPickerProps = {
+  date?: Date;
+  onWeekSelected?: () => void;
 };
 
 const getMonthDays = (month: number, year: number) => {
@@ -40,9 +45,26 @@ const DayBlock = (DayData: Day) => {
   );
 };
 
-const DatePicker = () => {
+function SetFirstDayOfWeek(today: Date) {
+  let d = today.getDay();
+
+  let offset = d - 1;
+
+  today.setDate(today.getDate() - offset);
+}
+
+function CurrentWeekToString(firstDay: Date) {
+  let lastDay = new Date(
+    firstDay.getFullYear(),
+    firstDay.getMonth(),
+    firstDay.getDate() + 6,
+  );
+  return `${firstDay.getDate()}.${firstDay.getMonth() + 1}.${firstDay.getFullYear()}-${lastDay.getDate()}.${lastDay.getMonth() + 1}.${lastDay.getFullYear()}`;
+}
+
+const WeekPicker = ({ date = new Date() }: WeekPickerProps) => {
   const [gridVisible, setGridVisible] = useState(false);
-  const Day = useRef(new Date());
+  const Day = useRef(date);
   const [Month, setMonth] = useState(Day.current.getMonth());
   const [Year, setYear] = useState(Day.current.getFullYear());
 
@@ -83,6 +105,7 @@ const DatePicker = () => {
       </>
     );
   };
+  SetFirstDayOfWeek(Day.current);
 
   return (
     <>
@@ -90,7 +113,9 @@ const DatePicker = () => {
         className="h-full w-full flex items-center justify-center px-2 cursor-pointer date-picker-anchor transition-colors duration-250 hover:bg-gray-800"
         onClick={() => setGridVisible(!gridVisible)}
       >
-        <span className="text-white text-center">22.12.2025-28.12.2025</span>
+        <span className="text-white text-center">
+          {CurrentWeekToString(Day.current)}
+        </span>
       </div>
       <div
         className={`overflow-clip rounded-md border-1 border-zinc-950 transition-transform duration-200 origin-top mt-0.5 bg-gray-900 dp-grid-position ${
@@ -134,4 +159,4 @@ const DatePicker = () => {
   );
 };
 
-export default DatePicker;
+export default WeekPicker;

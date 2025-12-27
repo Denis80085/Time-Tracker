@@ -3,8 +3,9 @@ import Table from "./TableComponent/Table.tsx";
 import { TableColumn } from "./TableComponent/Table.tsx";
 import Badge from "../Badge.tsx";
 import { type ReactNode, useRef, useEffect } from "react";
-import DateControl from "../DateControl.tsx";
+import WeekControl from "../WeekControl.tsx";
 import { useWeek } from "../../hooks/useWeek.ts";
+import { useWeekControlStore } from "../../stores/storeWeekControl.ts";
 
 type RowData = {
   date: string;
@@ -85,39 +86,18 @@ const dayTypeToBadgeVariant = (dayType: DayType) => {
   }
 };
 
-function weekStartFromOffset(date: Date, offset: number) {
-  const d = new Date(date);
-  const day = d.getDay(); // 0..6 (Sun..Sat)
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
-  const start = new Date(d);
-  start.setHours(0, 0, 0, 0);
-  start.setDate(diff + offset * 7);
-  return start;
-}
-
 function WeekOverView() {
-  const date = useRef<string>("nothing yet");
   const totalWorked = useRef(0);
-  const todayRef = useRef(new Date());
-  const weekOffset = useRef(0);
   const [currentWeek, setWeek, isLoading] = useWeek();
+  const startDate = useWeekControlStore((state) => state.start);
+  const endDate = useWeekControlStore((state) => state.end);
 
-  const newWeek = async (newOffset = 0) => {
-    weekOffset.current = newOffset;
-    //storeData(offsetStoreKey, weekOffset.current);
-    const weekStart = weekStartFromOffset(todayRef.current, weekOffset.current);
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 6);
-    try {
-      await setWeek(weekStart.toISOString(), weekEnd.toISOString());
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
+  console.log(startDate.toISOString(), endDate.toISOString());
   useEffect(() => {
-    newWeek(weekOffset.current).catch(console.error);
-  }, []);
+    setWeek(startDate.toISOString(), endDate.toISOString()).catch((e) =>
+      console.error(e),
+    );
+  }, [startDate, endDate]);
 
   if (!isLoading) {
     if (currentWeek.length > 0) {
@@ -125,8 +105,6 @@ function WeekOverView() {
       currentWeek.forEach((day) => {
         totalWorked.current += day.worked;
       });
-
-      date.current = `${currentWeek[0].date} - ${currentWeek[currentWeek.length - 1].date}`;
     }
   }
 
@@ -156,11 +134,7 @@ function WeekOverView() {
 
       <div className="flex justify-between items-end mb-3 z-10 relative">
         <div className="z-30">
-          <DateControl
-            date={date.current}
-            onRightClick={() => newWeek(weekOffset.current + 1)}
-            onLeftClick={() => newWeek(weekOffset.current - 1)}
-          />
+          <WeekControl />
         </div>
         <h1 className="text-5xl text-white text-center w-full absolute">
           Wochenübersicht

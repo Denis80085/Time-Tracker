@@ -78,7 +78,7 @@ async function fetchWeek(from: string, to: string) {
   }
 
   await fetch(
-    `https://www.ttrack.com/week?start=${from.split("T")[0]}&end=${to.split("T")[0]}T23:59:59Z`,
+    `https://www.ttrack.com/week?start=${from.split("T")[0]}&end=${to.split("T")[0]}`,
   )
     .then((res) => res.json())
     .then((data: DayData[]) => {

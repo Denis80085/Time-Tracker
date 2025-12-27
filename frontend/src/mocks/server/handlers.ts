@@ -17,13 +17,15 @@ export const handlers = [
     }
 
     if (start === null) {
-      start = "0001-01-01";
+      start = "1970-01-01";
     }
 
     let SessionsInRange = [];
     if (end !== null) {
-      const startDate = new Date(start).getTime();
-      const endDate = new Date(end).getTime();
+      let startDate = new Date(start);
+      let endDate = new Date(end);
+      endDate.setHours(23, 59, 59, 999);
+      startDate.setHours(0, 0, 0, 0);
 
       if (startDate > endDate) {
         return new Response(null, {
@@ -33,17 +35,23 @@ export const handlers = [
       }
 
       SessionsInRange = sessions.filter((session) => {
-        let sessionDate = new Date(session.started_at).getTime();
-
-        if (sessionDate >= startDate && sessionDate <= endDate) {
+        let sessionDate = new Date(session.started_at);
+        const sessionTime = sessionDate.getTime();
+        if (
+          sessionTime >= startDate.getTime() &&
+          sessionTime <= endDate.getTime()
+        ) {
           return session;
         }
       });
     } else {
-      const startDate = new Date(start).getTime();
+      let startDate = new Date(start);
+      startDate.setHours(0, 0, 0, 0);
       SessionsInRange = sessions.filter((session) => {
         let sessionDate = new Date(session.started_at);
-        if (sessionDate.getTime() >= startDate) {
+        sessionDate.setHours(0, 0, 0, 0);
+        const sessionTime = sessionDate.getTime();
+        if (sessionTime >= startDate.getTime()) {
           return session;
         }
       });

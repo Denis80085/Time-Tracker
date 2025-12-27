@@ -31,12 +31,14 @@ test("get week with only start", async () => {
 });
 
 test("get week with only end", async () => {
-  const endDate = "2025-09-03T23:59:59.999Z";
+  const endDate = "2025-09-03";
   const response = await fetch(`https://www.ttrack.com/week?end=${endDate}`);
   const data = await response.json();
 
   const expectation = sessions.filter((session) => {
-    if (new Date(session.started_at).getTime() <= new Date(endDate).getTime()) {
+    let sDate = new Date(session.started_at);
+    sDate.setHours(0, 0, 0, 0);
+    if (sDate.getTime() <= new Date(endDate).getTime()) {
       return session;
     }
   });
@@ -52,11 +54,11 @@ test("get week days from start to end", async () => {
   const data = await response.json();
 
   const startTime = new Date(startDate).getTime();
-  const endTime = new Date(endDate).getTime();
+  const endTime = new Date(2025, 8, 2, 23, 59, 59, 999).getTime();
   const expectation = sessions.filter((session) => {
-    let sTime = new Date(session.started_at).getTime();
+    let sDate = new Date(session.started_at);
 
-    if (sTime >= startTime && sTime <= endTime) {
+    if (sDate.getTime() >= startTime && sDate.getTime() < endTime) {
       return session;
     }
   });
