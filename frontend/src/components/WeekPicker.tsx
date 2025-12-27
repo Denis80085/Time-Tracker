@@ -1,18 +1,25 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo } from "react";
 import ExtendButton from "./ExtendButton.tsx";
 import Arrow from "./SVGs/Arrow.tsx";
+import { useWeekControlStore } from "../stores/storeWeekControl.ts";
 
 type Day = {
+  selected: boolean;
   currentMonth: boolean;
   date: Date;
 };
 
-type WeekPickerProps = {
-  date?: Date;
-  onWeekSelected?: () => void;
-};
+// type WeekPickerProps = {
+//   date?: Date;
+//   onWeekSelected?: () => void;
+// };
 
-const getMonthDays = (month: number, year: number) => {
+const getMonthDays = (
+  month: number,
+  year: number,
+  selectedStart: Date,
+  selectedEnd: Date,
+) => {
   let Grid: Array<Day> = [];
   const firstDayOfMonth = new Date(year, month, 1);
 
@@ -27,6 +34,9 @@ const getMonthDays = (month: number, year: number) => {
     const date = new Date(year, month, dayOffset + 1);
 
     Grid.push({
+      selected:
+        date.getTime() >= selectedStart.getTime() &&
+        date.getTime() <= selectedEnd.getTime(),
       date: date,
       currentMonth: date.getMonth() === month,
     });
@@ -37,7 +47,9 @@ const getMonthDays = (month: number, year: number) => {
 
 const DayBlock = (DayData: Day) => {
   return (
-    <div className="w-10 h-10 flex items-center justify-center hover:bg-gray-800">
+    <div
+      className={`w-10 h-10 flex items-center justify-center hover:bg-gray-800 ${DayData.selected ? "bg-blue-900" : ""}`}
+    >
       <span className={DayData.currentMonth ? "text-white" : "text-gray-400"}>
         {DayData.date.getDate()}
       </span>
@@ -45,38 +57,44 @@ const DayBlock = (DayData: Day) => {
   );
 };
 
-function SetFirstDayOfWeek(today: Date) {
-  let d = today.getDay();
+// function SetFirstDayOfWeek(today: Date) {
+//   let d = today.getDay();
+//
+//   let offset = d - 1;
+//
+//   today.setDate(today.getDate() - offset);
+// }
 
-  let offset = d - 1;
-
-  today.setDate(today.getDate() - offset);
-}
-
-function CurrentWeekToString(firstDay: Date) {
-  let lastDay = new Date(
-    firstDay.getFullYear(),
-    firstDay.getMonth(),
-    firstDay.getDate() + 6,
-  );
+function CurrentWeekToString(firstDay: Date, lastDay: Date) {
   return `${firstDay.getDate()}.${firstDay.getMonth() + 1}.${firstDay.getFullYear()}-${lastDay.getDate()}.${lastDay.getMonth() + 1}.${lastDay.getFullYear()}`;
 }
 
-const WeekPicker = ({ date = new Date() }: WeekPickerProps) => {
+const WeekPicker = () => {
   const [gridVisible, setGridVisible] = useState(false);
-  const Day = useRef(date);
-  const [Month, setMonth] = useState(Day.current.getMonth());
-  const [Year, setYear] = useState(Day.current.getFullYear());
+  const Start = useWeekControlStore((state) => state.start);
+  const End = useWeekControlStore((state) => state.end);
+  const [Month, setMonth] = useState(Start.getMonth());
+  const [Year, setYear] = useState(Start.getFullYear());
 
   const Grid = useMemo(() => {
-    const Days = getMonthDays(Month, Year);
-
+    const Days = getMonthDays(
+      Start.getMonth(),
+      Start.getFullYear(),
+      Start,
+      End,
+    );
+    console.log(Days);
     return Days.map((day, i) => {
       return (
-        <DayBlock currentMonth={day.currentMonth} date={day.date} key={i} />
+        <DayBlock
+          currentMonth={day.currentMonth}
+          date={day.date}
+          selected={day.selected}
+          key={i}
+        />
       );
     });
-  }, [Month, Year]);
+  }, [Month, Year, Start, End]);
 
   const FirstRow = () => {
     return (
@@ -105,7 +123,6 @@ const WeekPicker = ({ date = new Date() }: WeekPickerProps) => {
       </>
     );
   };
-  SetFirstDayOfWeek(Day.current);
 
   return (
     <>
@@ -114,7 +131,7 @@ const WeekPicker = ({ date = new Date() }: WeekPickerProps) => {
         onClick={() => setGridVisible(!gridVisible)}
       >
         <span className="text-white text-center">
-          {CurrentWeekToString(Day.current)}
+          {CurrentWeekToString(Start, End)}
         </span>
       </div>
       <div
@@ -131,27 +148,19 @@ const WeekPicker = ({ date = new Date() }: WeekPickerProps) => {
             className="hover:bg-gray-800"
             extend_to="right"
             content={<Arrow color="white" rotate={0} size={30} />}
-            onClick={() => {
-              Day.current.setMonth(Day.current.getMonth() - 1);
-              setMonth(Day.current.getMonth());
-              setYear(Day.current.getFullYear());
-            }}
+            onClick={() => {}}
           />
           <span className="text-white text-center">
             {Intl.DateTimeFormat("de-DE", {
               month: "long",
               year: "numeric",
-            }).format(Day.current)}
+            }).format(Start)}
           </span>
           <ExtendButton
             className="hover:bg-gray-800"
             extend_to="left"
             content={<Arrow color="white" rotate={180} size={30} />}
-            onClick={() => {
-              Day.current.setMonth(Day.current.getMonth() + 1);
-              setMonth(Day.current.getMonth());
-              setYear(Day.current.getFullYear());
-            }}
+            onClick={() => {}}
           />
         </div>
       </div>

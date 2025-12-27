@@ -83,7 +83,7 @@ async function fetchWeek(from: string, to: string) {
     .then((res) => res.json())
     .then((data: DayData[]) => {
       // daysFormated = data.map((day) => FormatDay(day));
-
+      console.log(data);
       data.forEach((day) => {
         const formated = FormatDay(day);
 

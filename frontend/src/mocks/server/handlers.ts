@@ -24,10 +24,11 @@ export const handlers = [
     if (end !== null) {
       let startDate = new Date(start);
       let endDate = new Date(end);
-      endDate.setHours(23, 59, 59, 999);
-      startDate.setHours(0, 0, 0, 0);
 
-      if (startDate > endDate) {
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      if (startDate.getTime() > endDate.getTime()) {
         return new Response(null, {
           status: 400,
           statusText: "Bad Request. Start date must be before end date.",
@@ -36,6 +37,7 @@ export const handlers = [
 
       SessionsInRange = sessions.filter((session) => {
         let sessionDate = new Date(session.started_at);
+        sessionDate.setHours(0, 0, 0, 0);
         const sessionTime = sessionDate.getTime();
         if (
           sessionTime >= startDate.getTime() &&
@@ -47,6 +49,7 @@ export const handlers = [
     } else {
       let startDate = new Date(start);
       startDate.setHours(0, 0, 0, 0);
+
       SessionsInRange = sessions.filter((session) => {
         let sessionDate = new Date(session.started_at);
         sessionDate.setHours(0, 0, 0, 0);

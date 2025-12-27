@@ -2,26 +2,15 @@ import ExtendButton from "./ExtendButton";
 import Arrow from "./SVGs/Arrow.tsx";
 import WeekPicker from "./WeekPicker.tsx";
 import { useWeekControlStore } from "../stores/storeWeekControl.ts";
-import { useMemo } from "react";
 
 type WeekControlProps = {
   value?: Date;
   onSelectionChanged?: () => void;
 };
 
-function WeekControl({ onSelectionChanged = () => {} }: WeekControlProps) {
+function WeekControl() {
   const nextWeek = useWeekControlStore((state) => state.setNextWeek);
   const prevWeek = useWeekControlStore((state) => state.setPreviousWeek);
-  const startDate = useWeekControlStore((state) => state.start);
-
-  const weekPicker = useMemo(() => {
-    return (
-      <WeekPicker
-        date={startDate}
-        onWeekSelected={() => onSelectionChanged()}
-      />
-    );
-  }, [startDate]);
 
   return (
     <div className="h-11 bg-gray-900 border-gray-950 border-1 rounded-md grid grid-cols-[auto_1fr_auto] grid-rows-1 text-nowrap place-content-center cursor-default">
@@ -32,7 +21,9 @@ function WeekControl({ onSelectionChanged = () => {} }: WeekControlProps) {
         className="w-full pr-2 border-1 transition-colors duration-250 border-zinc-950 hover:bg-gray-800"
         content={<Arrow color="white" rotate={0} size={30} />}
       />
-      <div className="h-full w-full border-1 border-zinc-950">{weekPicker}</div>
+      <div className="h-full w-full border-1 border-zinc-950">
+        <WeekPicker />
+      </div>
       <ExtendButton
         onClick={() => nextWeek()}
         className="w-full pl-2 border-1 transition-colors duration-250 border-zinc-950 hover:bg-gray-800"

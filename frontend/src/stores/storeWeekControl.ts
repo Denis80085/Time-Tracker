@@ -8,9 +8,12 @@ type WeekControlStore = {
 };
 
 function getWeekStart(date: Date) {
-  const day = date.getDay();
-  const diff = -1 * (day - 1);
-  return new Date(date.setDate(date.getDate() + diff));
+  let d = date.getDay();
+
+  let offset = d - 1;
+
+  date.setDate(date.getDate() - offset);
+  return date;
 }
 
 function getWeekEnd(date: Date) {
@@ -18,6 +21,14 @@ function getWeekEnd(date: Date) {
   endDate.setDate(endDate.getDate() + 6);
   return endDate;
 }
+
+// function SetFirstDayOfWeek(today: Date) {
+//   let d = today.getDay();
+//
+//   let offset = d - 1;
+//
+//   today.setDate(today.getDate() - offset);
+// }
 
 export const useWeekControlStore = create<WeekControlStore>((set) => ({
   start: getWeekStart(new Date()),
