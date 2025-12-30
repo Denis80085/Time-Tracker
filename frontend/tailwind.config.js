@@ -85,7 +85,7 @@ module.exports = {
         {
           values: {
             dark: "gray-900",
-            light: "gray-200",
+            light: "gray-100",
             red: "red-500",
             yellow: "yellow-500",
             green: "green-400",

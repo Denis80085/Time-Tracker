@@ -51,6 +51,33 @@
 
     animation: sheen-horizontal 400ms linear forwards;
   }
+
+  @keyframes blick {
+    0%   { transform: scale(0.7); opacity: 0; }
+    40%  { transform: scale(0.75); opacity: 0.4; }
+    70%  { transform: scale(0.80); opacity: 0.3; }
+    100% { transform: scale(0.80); opacity: 0.2; }
+  }
+
+  .bg-square-blick {
+    position: relative;
+  }
+
+  .bg-square-blick::after {
+    z-index: -1; /* keep it behind content */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #4f67dc;
+    transform: scale(0.8);
+    opacity: 0;
+    border-radius: 50%; /* optional polish */
+  }
+
+  .bg-square-blick:hover::after {
+    animation: blick 400ms ease-out forwards;
+  }
+
 }
 
 .date-picker-anchor{
