@@ -93,7 +93,7 @@ function WeekOverView() {
   const endDate = useWeekControlStore((state) => state.end);
 
   useEffect(() => {
-    setWeek(startDate.toISOString(), endDate.toISOString()).catch((e) =>
+    setWeek(startDate.toDateString(), endDate.toDateString()).catch((e) =>
       console.error(e),
     );
   }, [startDate, endDate]);

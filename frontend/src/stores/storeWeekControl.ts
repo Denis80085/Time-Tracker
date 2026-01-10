@@ -5,12 +5,14 @@ type WeekControlStore = {
   end: Date;
   setNextWeek: () => void;
   setPreviousWeek: () => void;
+  setWeek: (start: Date, end: Date) => void;
+  setWeekFromDate: (date: Date) => void;
 };
 
 function getWeekStart(date: Date) {
   let d = date.getDay();
 
-  let offset = d - 1;
+  let offset = d > 0 ? d - 1 : 6;
 
   date.setDate(date.getDate() - offset);
   return date;
@@ -44,5 +46,17 @@ export const useWeekControlStore = create<WeekControlStore>((set) => ({
       start: new Date(state.start.setDate(state.start.getDate() - 7)),
       end: new Date(state.end.setDate(state.end.getDate() - 7)),
     }));
+  },
+  setWeek: (start: Date, end: Date) => {
+    set({ start: new Date(start), end: new Date(end) });
+  },
+  setWeekFromDate: (date: Date) => {
+    set({
+      start: getWeekStart(new Date(date)),
+      end: getWeekEnd(new Date(date)),
+    });
+    set((state) => {
+      return state;
+    });
   },
 }));

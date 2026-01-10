@@ -7,6 +7,7 @@ type Day = {
   selected: boolean;
   currentMonth: boolean;
   date: Date;
+  onClick?: () => void;
 };
 
 // type WeekPickerProps = {
@@ -47,6 +48,10 @@ const DayBlock = (DayData: Day) => {
   return (
     <div
       className={`w-10 h-10 flex items-center justify-center relative bg-square-blick ${DayData.currentMonth ? "text-white" : "text-gray-400"} hover:text-white`} //hover:bg-gray-800 `}
+      onClick={() => {
+        useWeekControlStore.getState().setWeekFromDate(DayData.date);
+        if (DayData.onClick) DayData.onClick();
+      }}
     >
       {DayData.selected ? (
         <>
@@ -94,25 +99,15 @@ const WeekPicker = () => {
   }, [localDate]);
 
   const Days = useMemo(() => {
-    if (!gridVisible) {
-      if (
-        Start.getMonth() !== localDate.getMonth() ||
-        Start.getFullYear() !== localDate.getFullYear()
-      ) {
-        setLocalDate(Start);
-      }
-      return [];
-    }
     return getMonthDays(
       localDate.getMonth(),
       localDate.getFullYear(),
       Start,
       End,
     );
-  }, [localDate, Start, End, gridVisible]);
+  }, [localDate, Start, End]);
 
   const Grid = useMemo(() => {
-    console.log("Grid rerendered");
     if (!Days.length) return;
 
     let Weeks: Day[][] = [];
@@ -124,15 +119,19 @@ const WeekPicker = () => {
       return (
         <div
           key={i}
-          className="grid grid-cols-7 border-1 border-transparent hover:inborder-blue"
+          className="grid grid-cols-7 border-1 border-transparent hover:inborder-blue cursor-pointer"
         >
           {day.map((d, j) => {
+            d.date.setHours(0, 0, 0, 0);
             return (
               <DayBlock
                 key={j}
                 date={d.date}
                 selected={d.selected}
                 currentMonth={d.currentMonth}
+                onClick={() => {
+                  setGridVisible(false);
+                }}
               />
             );
           })}
@@ -173,7 +172,15 @@ const WeekPicker = () => {
     <>
       <div
         className="h-full w-full flex items-center justify-center px-2 cursor-pointer date-picker-anchor transition-colors duration-250 hover:bg-gray-800"
-        onClick={() => setGridVisible(!gridVisible)}
+        onClick={() => {
+          setGridVisible(!gridVisible);
+          if (
+            (!gridVisible && Start.getMonth() !== localDate.getMonth()) ||
+            Start.getFullYear() !== localDate.getFullYear()
+          ) {
+            setLocalDate(Start);
+          }
+        }}
       >
         <span className="text-white text-center">
           {CurrentWeekToString(Start, End)}
