@@ -195,19 +195,19 @@ const WeekPicker = () => {
           {FirstRow()}
           {Grid}
         </div>
-        <div className="grid mt-0.5 grid-cols-[1fr_2fr_1fr] gap-x-2 items-center">
+        <div className="grid mt-0.5 grid-cols-[1fr_2fr_1fr] gap-x-0.5 items-center">
           <ExtendButton
             className="hover:bg-gray-800"
             extend_to="right"
             content={<Arrow color="white" rotate={0} size={30} />}
             onClick={() => toPrevLocalMonth()}
           />
-          <span className="text-white text-center">
+          <button className="w-full h-full text-white text-center transition-colors duration-200 hover:bg-gray-800 cursor-pointer">
             {Intl.DateTimeFormat("de-DE", {
               month: "long",
               year: "numeric",
             }).format(localDate)}
-          </span>
+          </button>
           <ExtendButton
             className="hover:bg-gray-800"
             extend_to="left"
