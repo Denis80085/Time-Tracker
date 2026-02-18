@@ -1,7 +1,8 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import ExtendButton from "./ExtendButton.tsx";
 import Arrow from "./SVGs/Arrow.tsx";
 import { useWeekControlStore } from "../stores/storeWeekControl.ts";
+import YearMouthPicker from "./YearMouthPicker.tsx";
 
 type Day = {
   selected: boolean;
@@ -47,7 +48,7 @@ const getMonthDays = (
 const DayBlock = (DayData: Day) => {
   return (
     <div
-      className={`w-10 h-10 flex items-center justify-center relative bg-square-blick ${DayData.currentMonth ? "text-white" : "text-gray-400"} hover:text-white`} //hover:bg-gray-800 `}
+      className={`flex w-10 h-10 items-center justify-center relative bg-square-blick ${DayData.currentMonth ? "text-white" : "text-gray-400"} hover:text-white`} //hover:bg-gray-800 `}
       onClick={() => {
         useWeekControlStore.getState().setWeekFromDate(DayData.date);
         if (DayData.onClick) DayData.onClick();
@@ -81,10 +82,20 @@ function CurrentWeekToString(firstDay: Date, lastDay: Date) {
 }
 
 const WeekPicker = () => {
-  const [gridVisible, setGridVisible] = useState(false);
+  const [containerVisible, setContainerVisible] = useState(false);
+  const [isYearMouthMode, setIsYearMouthMode] = useState(false);
   const Start = useWeekControlStore((state) => state.start);
   const End = useWeekControlStore((state) => state.end);
   const [localDate, setLocalDate] = useState(Start); // for Month and Year
+  const [size, setSize] = useState({ w: 0, h: 0 });
+
+  const pickerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (pickerRef.current) {
+      const { offsetWidth, offsetHeight } = pickerRef.current;
+      setSize({ w: offsetWidth, h: offsetHeight });
+    }
+  }, []);
 
   const toNextLocalMonth = useCallback(() => {
     setLocalDate(
@@ -130,7 +141,7 @@ const WeekPicker = () => {
                 selected={d.selected}
                 currentMonth={d.currentMonth}
                 onClick={() => {
-                  setGridVisible(false);
+                  setContainerVisible(false);
                 }}
               />
             );
@@ -173,9 +184,9 @@ const WeekPicker = () => {
       <div
         className="h-full w-full flex items-center justify-center px-2 cursor-pointer date-picker-anchor transition-colors duration-250 hover:bg-gray-800"
         onClick={() => {
-          setGridVisible(!gridVisible);
+          setContainerVisible(!containerVisible);
           if (
-            (!gridVisible && Start.getMonth() !== localDate.getMonth()) ||
+            (!containerVisible && Start.getMonth() !== localDate.getMonth()) ||
             Start.getFullYear() !== localDate.getFullYear()
           ) {
             setLocalDate(Start);
@@ -187,27 +198,37 @@ const WeekPicker = () => {
         </span>
       </div>
       <div
-        className={`overflow-clip rounded-md border-1 border-zinc-950 transition-transform duration-200 origin-top mt-0.5 bg-gray-900 dp-grid-position ${
-          gridVisible ? "transform scale-y-100 " : "transform scale-y-0"
+        ref={pickerRef}
+        style={{ minWidth: size.w, minHeight: size.h }}
+        className={`overflow-clip grid grid-rows-[5fr-1fr] rounded-md border-1 border-zinc-950 transition-transform duration-200 origin-top mt-0.5 bg-gray-900 dp-grid-position ${
+          containerVisible ? "transform scale-y-100 " : "transform scale-y-0"
         }`}
       >
-        <div className={`grid grid-rows-[auto_repeat(6,_1fr)] columns-5xl`}>
-          {FirstRow()}
-          {Grid}
-        </div>
-        <div className="grid mt-0.5 grid-cols-[1fr_2fr_1fr] gap-x-0.5 items-center">
+        {isYearMouthMode ? (
+          <YearMouthPicker />
+        ) : (
+          <div className={`grid grid-rows-[auto_repeat(6,_1fr)]`}>
+            {FirstRow()}
+            {Grid}
+          </div>
+        )}
+
+        <div className="grid mt-0.5 grid-cols-[1fr_2fr_1fr] items-center">
           <ExtendButton
             className="hover:bg-gray-800"
             extend_to="right"
             content={<Arrow color="white" rotate={0} size={30} />}
             onClick={() => toPrevLocalMonth()}
           />
-          <button className="w-full h-full text-white text-center transition-colors duration-200 hover:bg-gray-800 cursor-pointer">
+          <span
+            className="text-white transition-colors duration-200 hover:bg-gray-800 cursor-pointer size-full flex items-center justify-center select-none"
+            onClick={() => setIsYearMouthMode((prev) => !prev)}
+          >
             {Intl.DateTimeFormat("de-DE", {
               month: "long",
               year: "numeric",
             }).format(localDate)}
-          </button>
+          </span>
           <ExtendButton
             className="hover:bg-gray-800"
             extend_to="left"
