@@ -200,12 +200,15 @@ const WeekPicker = () => {
       <div
         ref={pickerRef}
         style={{ minWidth: size.w, minHeight: size.h }}
-        className={`overflow-clip grid grid-rows-[5fr-1fr] rounded-md border-1 border-zinc-950 transition-transform duration-200 origin-top mt-0.5 bg-gray-900 dp-grid-position ${
+        className={`overflow-clip grid grid-rows-[1fr_auto] grid-cols-[1fr] place-content-end rounded-md border-1 border-zinc-950 transition-transform duration-200 origin-top mt-0.5 bg-gray-900 dp-grid-position ${
           containerVisible ? "transform scale-y-100 " : "transform scale-y-0"
         }`}
       >
         {isYearMouthMode ? (
-          <YearMouthPicker />
+          <YearMouthPicker
+            year={localDate.getFullYear()}
+            month={localDate.getMonth()}
+          />
         ) : (
           <div className={`grid grid-rows-[auto_repeat(6,_1fr)]`}>
             {FirstRow()}
@@ -213,7 +216,7 @@ const WeekPicker = () => {
           </div>
         )}
 
-        <div className="grid mt-0.5 grid-cols-[1fr_2fr_1fr] items-center">
+        <div className="grid max-h-1/6 mt-0.5 grid-cols-[1fr_2fr_1fr] items-center">
           <ExtendButton
             className="hover:bg-gray-800"
             extend_to="right"
