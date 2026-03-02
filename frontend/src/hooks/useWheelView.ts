@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 type Item = {
   scale: number;
   content: string;
+  isSelected?: boolean;
 };
 
 function getItemsContents(options: Array<string>, start: number, end: number) {
@@ -31,6 +32,7 @@ function createItemWindow(contents: Array<string>, mid: number) {
     result.push({
       scale: scale,
       content: contents[i],
+      isSelected: i === mid,
     });
   }
   return result;

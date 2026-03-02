@@ -32,6 +32,7 @@ const WheelSelectVarients = cva(
 interface WheelSelectProps extends VariantProps<typeof WheelSelectVarients> {
   options: Array<string>;
   displayAtOnce: number;
+  selectedIndex?: number;
 }
 
 const WheelSelect: FC<WheelSelectProps> = ({
@@ -39,8 +40,18 @@ const WheelSelect: FC<WheelSelectProps> = ({
   size,
   options,
   displayAtOnce,
+  selectedIndex,
 }) => {
   const [itemsWindow, next, prev] = useCycleWheelView(options, displayAtOnce);
+
+  const textColor_inBorder = {
+    default: "inborder-light",
+    gray: "inborder-gray",
+    yellow: "inborder-yellow",
+    blue: "inborder-blue",
+    light: "inborder-light",
+    green: "inborder-green",
+  };
 
   return (
     <div
@@ -52,17 +63,25 @@ const WheelSelect: FC<WheelSelectProps> = ({
       className={`${cn(WheelSelectVarients({ text_color, size }))} border-none`}
     >
       {itemsWindow.map((option, index) => (
-        <span
+        <div
+          className="relative m-0 py-1.5 cursor-pointer transition-transform duration-24 hover:scale-105"
+          key={index}
           style={{
             width: `${option.scale}%`,
-            fontSize: `${option.scale}%`,
           }}
-          className={`relative m-0 py-1.5 border-underline-light transition-all cursor-pointer duration-150 hover:scale-105`}
-          key={index}
         >
-          <div className="absolute w-full h-[90%] left-0 top-[5%] border-l border-r bg-green-200/10"></div>
-          {option.content}
-        </span>
+          <p
+            style={{
+              fontSize: `${option.scale}%`,
+            }}
+            className={`z-100 py-1 size-full border-underline-light`}
+          >
+            {option.content}
+          </p>
+          <div
+            className={`z-0 absolute w-full h-[90%] left-0 top-[5%] ${option.isSelected && text_color ? textColor_inBorder[text_color] : "border-l border-r"} bg-green-200/10`}
+          ></div>
+        </div>
       ))}
     </div>
   );
