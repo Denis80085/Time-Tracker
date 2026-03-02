@@ -31,8 +31,33 @@ function YearMouthPicker({ year, month, onSubmit, ...props }: YMPProps) {
       className={`grid grid-cols-1 grid-rows-[1fr_auto] place-items-center py-4 ${props.className ?? ""}`}
     >
       <div className="w-full flex justify-around items-center">
-        <WheelSelect options={Object.values(Months)} displayAtOnce={5} />
-        <span>{year}</span>
+        <div className="basis-1/2">
+          <WheelSelect
+            text_color={"green"}
+            size={"xl"}
+            options={Object.values(Months)}
+            displayAtOnce={5}
+          />
+        </div>
+        <div className="basis-1/2">
+          <WheelSelect
+            text_color={"yellow"}
+            size={"xl"}
+            options={[
+              "2022",
+              "2023",
+              "2024",
+              "2025",
+              "2026",
+              "2027",
+              "2028",
+              "2029",
+              "2030",
+              "2031",
+            ]}
+            displayAtOnce={5}
+          />
+        </div>
       </div>
       <div className="">
         <button className="bg-gray-900 text-white rounded-md px-2 py-1">
