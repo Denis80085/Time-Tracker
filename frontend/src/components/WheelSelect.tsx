@@ -1,6 +1,6 @@
 import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "../utils/helpers.ts";
-import { type FC } from "react";
+import { type FC, useEffect } from "react";
 import { useCycleWheelView } from "../hooks/useWheelView.ts";
 
 const WheelSelectVarients = cva(
@@ -32,7 +32,7 @@ const WheelSelectVarients = cva(
 interface WheelSelectProps extends VariantProps<typeof WheelSelectVarients> {
   options: Array<string>;
   displayAtOnce: number;
-  selectedIndex?: number;
+  selected?: number;
 }
 
 const WheelSelect: FC<WheelSelectProps> = ({
@@ -40,9 +40,16 @@ const WheelSelect: FC<WheelSelectProps> = ({
   size,
   options,
   displayAtOnce,
-  selectedIndex,
+  selected,
 }) => {
-  const [itemsWindow, next, prev] = useCycleWheelView(options, displayAtOnce);
+  const [itemsWindow, next, prev, select] = useCycleWheelView(
+    options,
+    displayAtOnce,
+  );
+
+  useEffect(() => {
+    if (selected != null) select(selected);
+  }, []);
 
   const textColor_inBorder = {
     default: "inborder-light",
@@ -64,17 +71,18 @@ const WheelSelect: FC<WheelSelectProps> = ({
     >
       {itemsWindow.map((option, index) => (
         <div
-          className="relative m-0 py-1.5 cursor-pointer transition-transform duration-24 hover:scale-105"
+          className="relative m-0 cursor-pointer transition-transform duration-24 hover:scale-105"
           key={index}
           style={{
             width: `${option.scale}%`,
           }}
+          onClick={() => select(options.indexOf(option.content))}
         >
           <p
             style={{
               fontSize: `${option.scale}%`,
             }}
-            className={`z-100 py-1 size-full border-underline-light`}
+            className={`z-100 py-2.5 size-full ${option.isSelected ? "" : "border-underline-light"}`}
           >
             {option.content}
           </p>
