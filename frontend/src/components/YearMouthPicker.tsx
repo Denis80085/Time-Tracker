@@ -1,4 +1,9 @@
 import WheelSelect from "./WheelSelect.tsx";
+import {
+  useInfiniteList,
+  type UpdateResult,
+} from "../hooks/useInfiniteList.ts";
+import { useRef, useState, useCallback } from "react";
 
 type YMPProps = {
   year?: number;
@@ -11,7 +16,35 @@ function YearMouthPicker({ year, month, onSubmit, ...props }: YMPProps) {
   if (!year) year = new Date().getFullYear();
   if (!month) month = new Date().getMonth();
 
-  const Months: Record<number, string> = {
+  const [yearFirst, setYearFirst] = useState(year);
+  const handelUpdate = () => {
+    let res: UpdateResult = { hasMore: true, items: [] };
+
+    for (let i = 20; i > 0; i--) {
+      res.items.push({
+        id: yearFirst - i,
+        value: yearFirst - i,
+        label: String(yearFirst - i),
+      });
+    }
+    for (let i = 0; i < 20; i++) {
+      res.items.push({
+        id: yearFirst + i,
+        value: yearFirst + i,
+        label: String(yearFirst + i),
+      });
+    }
+
+    setYearFirst((prev) => {
+      return prev + 20;
+    });
+
+    return res;
+  };
+
+  const [items, triggerUpdate] = useInfiniteList(handelUpdate);
+
+  let Months: Record<number, string> = {
     0: "Januar",
     1: "Februar",
     2: "März",
@@ -37,25 +70,20 @@ function YearMouthPicker({ year, month, onSubmit, ...props }: YMPProps) {
             size={"xl"}
             options={Object.values(Months)}
             displayAtOnce={5}
+            selected={month}
           />
         </div>
         <div className="basis-1/2">
           <WheelSelect
             text_color={"yellow"}
             size={"xl"}
-            options={[
-              "2022",
-              "2023",
-              "2024",
-              "2025",
-              "2026",
-              "2027",
-              "2028",
-              "2029",
-              "2030",
-              "2031",
-            ]}
+            options={items.map((item) => item.label)}
             displayAtOnce={5}
+            selected={items ? items.length / 2 : undefined}
+            selectionChanged={(i) => {
+              if (i == items.length - 6) triggerUpdate();
+              console.log(i); // TODO: trigger the update
+            }}
           />
         </div>
       </div>

@@ -52,7 +52,7 @@ function useCycleWheelView(
         (n - 1) / 2,
       ),
     );
-  }, []);
+  }, [options]);
 
   const updateWindow = () => {
     const contents = getItemsContents(

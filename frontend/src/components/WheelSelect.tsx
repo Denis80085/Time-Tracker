@@ -33,6 +33,7 @@ interface WheelSelectProps extends VariantProps<typeof WheelSelectVarients> {
   options: Array<string>;
   displayAtOnce: number;
   selected?: number;
+  selectionChanged?: (index: number | undefined) => void;
 }
 
 const WheelSelect: FC<WheelSelectProps> = ({
@@ -41,6 +42,7 @@ const WheelSelect: FC<WheelSelectProps> = ({
   options,
   displayAtOnce,
   selected,
+  selectionChanged,
 }) => {
   const [itemsWindow, next, prev, select] = useCycleWheelView(
     options,
@@ -49,7 +51,7 @@ const WheelSelect: FC<WheelSelectProps> = ({
 
   useEffect(() => {
     if (selected != null) select(selected);
-  }, []);
+  }, [options, selected]);
 
   const textColor_inBorder = {
     default: "inborder-light",
@@ -59,6 +61,16 @@ const WheelSelect: FC<WheelSelectProps> = ({
     light: "inborder-light",
     green: "inborder-green",
   };
+
+  if (selectionChanged) {
+    let selectedInWindow = itemsWindow.find((i) => i.isSelected);
+
+    let option: number | undefined = selectedInWindow
+      ? options.indexOf(selectedInWindow.content)
+      : undefined;
+
+    selectionChanged(option);
+  }
 
   return (
     <div
@@ -76,7 +88,9 @@ const WheelSelect: FC<WheelSelectProps> = ({
           style={{
             width: `${option.scale}%`,
           }}
-          onClick={() => select(options.indexOf(option.content))}
+          onClick={() => {
+            select(options.indexOf(option.content));
+          }}
         >
           <p
             style={{
