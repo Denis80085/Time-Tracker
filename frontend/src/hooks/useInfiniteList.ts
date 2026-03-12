@@ -13,22 +13,31 @@ export type UpdateResult = {
 
 export function useInfiniteList(
   handleUpdate: () => UpdateResult,
-): [Array<Item>, () => void, boolean] {
+): [Array<Item>, () => void, () => void, boolean] {
   const [items, setItems] = useState(Array<Item>());
   const [hasMore, setHasMore] = useState(true);
 
-  const update = useCallback(() => {
+  const addOnTop = useCallback(() => {
     if (!hasMore) return;
 
     const e = handleUpdate();
-    console.log(e);
-    setItems(e.items);
+    setItems((prev) => [...prev, ...e.items]);
+    setHasMore(e.hasMore);
+  }, [hasMore, handleUpdate, items]);
+
+  const addOnBottom = useCallback(() => {
+    if (!hasMore) return;
+
+    const e = handleUpdate();
+    setItems((prev) => [...e.items, ...prev]);
     setHasMore(e.hasMore);
   }, [hasMore, handleUpdate, items]);
 
   useEffect(() => {
-    update();
+    const e = handleUpdate();
+    setItems(e.items);
+    setHasMore(e.hasMore);
   }, []);
 
-  return [items, update, hasMore];
+  return [items, addOnTop, addOnBottom, hasMore];
 }

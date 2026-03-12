@@ -3,7 +3,7 @@ import {
   useInfiniteList,
   type UpdateResult,
 } from "../hooks/useInfiniteList.ts";
-import { useRef, useState, useCallback } from "react";
+import { useState, useRef } from "react";
 
 type YMPProps = {
   year?: number;
@@ -12,37 +12,36 @@ type YMPProps = {
   onSubmit?: (date: Date) => void;
 };
 
-function YearMouthPicker({ year, month, onSubmit, ...props }: YMPProps) {
-  if (!year) year = new Date().getFullYear();
-  if (!month) month = new Date().getMonth();
+function YearMouthPicker({
+  year = new Date().getFullYear(),
+  month = new Date().getMonth(),
+  onSubmit,
+  ...props
+}: YMPProps) {
+  const loadYears = useRef({
+    from: year - 10,
+    to: year + 10,
+  });
+  const [yearSelected, setYearSelected] = useState(-1);
 
-  const [yearFirst, setYearFirst] = useState(year);
   const handelUpdate = () => {
     let res: UpdateResult = { hasMore: true, items: [] };
 
-    for (let i = 20; i > 0; i--) {
+    let load = loadYears.current;
+    for (let i = load.from; i <= load.to; i++) {
       res.items.push({
-        id: yearFirst - i,
-        value: yearFirst - i,
-        label: String(yearFirst - i),
-      });
-    }
-    for (let i = 0; i < 20; i++) {
-      res.items.push({
-        id: yearFirst + i,
-        value: yearFirst + i,
-        label: String(yearFirst + i),
+        id: i - load.from,
+        value: i,
+        label: String(i),
       });
     }
 
-    setYearFirst((prev) => {
-      return prev + 20;
-    });
+    if (yearSelected < 0) setYearSelected(Math.floor(res.items.length / 2));
 
     return res;
   };
 
-  const [items, triggerUpdate] = useInfiniteList(handelUpdate);
+  const [items, addOnTop, addOnBottom] = useInfiniteList(handelUpdate);
 
   let Months: Record<number, string> = {
     0: "Januar",
@@ -79,10 +78,25 @@ function YearMouthPicker({ year, month, onSubmit, ...props }: YMPProps) {
             size={"xl"}
             options={items.map((item) => item.label)}
             displayAtOnce={5}
-            selected={items ? items.length / 2 : undefined}
-            selectionChanged={(i) => {
-              if (i == items.length - 6) triggerUpdate();
-              console.log(i); // TODO: trigger the update
+            selected={yearSelected}
+            selectionChanged={(o) => {
+              if (o.index === -1) return;
+
+              let bottomTriger = 2;
+              let topTriger = items.length - 3;
+
+              if (o.index >= topTriger) {
+                loadYears.current.from = items[items.length - 1].value + 1;
+                loadYears.current.to = items[items.length - 1].value + 10;
+                setYearSelected(o.index);
+                addOnTop();
+              }
+              if (o.index <= bottomTriger) {
+                loadYears.current.to = items[0].value - 1;
+                loadYears.current.from = items[0].value - 10;
+                setYearSelected(o.index + 10);
+                addOnBottom();
+              }
             }}
           />
         </div>

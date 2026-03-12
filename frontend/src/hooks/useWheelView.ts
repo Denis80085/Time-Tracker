@@ -65,7 +65,7 @@ function useCycleWheelView(
   };
 
   const select = (index: number) => {
-    let b = (n - 1) / 2;
+    let b = Math.floor((n - 1) / 2);
 
     let newStart = index - b;
     if (newStart < 0) newStart = newStart + options.length;
@@ -73,7 +73,6 @@ function useCycleWheelView(
     let newEnd = index + b;
     if (newEnd >= options.length) newEnd = newEnd - options.length;
 
-    console.log(newStart, newEnd);
     Range.current = { start: newStart, end: newEnd };
     updateWindow();
   };

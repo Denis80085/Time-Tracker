@@ -33,7 +33,7 @@ interface WheelSelectProps extends VariantProps<typeof WheelSelectVarients> {
   options: Array<string>;
   displayAtOnce: number;
   selected?: number;
-  selectionChanged?: (index: number | undefined) => void;
+  selectionChanged?: (i: { content: string; index: number }) => void;
 }
 
 const WheelSelect: FC<WheelSelectProps> = ({
@@ -53,6 +53,22 @@ const WheelSelect: FC<WheelSelectProps> = ({
     if (selected != null) select(selected);
   }, [options, selected]);
 
+  useEffect(() => {
+    if (selectionChanged) {
+      let selectedInWindow = itemsWindow.find((i) => i.isSelected);
+
+      let optionIndex: number | undefined = selectedInWindow
+        ? options.indexOf(selectedInWindow.content)
+        : undefined;
+
+      let option: { content: string; index: number } | undefined = {
+        content: selectedInWindow?.content ?? "",
+        index: optionIndex ?? -1,
+      };
+      selectionChanged(option);
+    }
+  }, [itemsWindow]);
+
   const textColor_inBorder = {
     default: "inborder-light",
     gray: "inborder-gray",
@@ -61,16 +77,6 @@ const WheelSelect: FC<WheelSelectProps> = ({
     light: "inborder-light",
     green: "inborder-green",
   };
-
-  if (selectionChanged) {
-    let selectedInWindow = itemsWindow.find((i) => i.isSelected);
-
-    let option: number | undefined = selectedInWindow
-      ? options.indexOf(selectedInWindow.content)
-      : undefined;
-
-    selectionChanged(option);
-  }
 
   return (
     <div
