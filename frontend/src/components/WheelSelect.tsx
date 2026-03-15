@@ -29,11 +29,17 @@ const WheelSelectVarients = cva(
   },
 );
 
+type WheelSelectOption = {
+  label: string;
+  value: any;
+  index: number;
+};
+
 interface WheelSelectProps extends VariantProps<typeof WheelSelectVarients> {
-  options: Array<string>;
+  options: Array<WheelSelectOption>;
   displayAtOnce: number;
   selected?: number;
-  selectionChanged?: (i: { content: string; index: number }) => void;
+  selectionChanged?: (i?: WheelSelectOption) => void;
 }
 
 const WheelSelect: FC<WheelSelectProps> = ({
@@ -59,15 +65,7 @@ const WheelSelect: FC<WheelSelectProps> = ({
     if (selectionChanged) {
       let selectedInWindow = itemsWindow.find((i) => i.isSelected);
 
-      let optionIndex: number | undefined = selectedInWindow
-        ? options.indexOf(selectedInWindow.content)
-        : undefined;
-
-      let option: { content: string; index: number } | undefined = {
-        content: selectedInWindow?.content ?? "",
-        index: optionIndex ?? -1,
-      };
-      selectionChanged(option);
+      selectionChanged(selectedInWindow?.content);
     }
   }, [itemsWindow]);
 
@@ -106,7 +104,7 @@ const WheelSelect: FC<WheelSelectProps> = ({
             }}
             className={`z-100 py-2.5 size-full ${option.isSelected ? "" : "border-underline-light"}`}
           >
-            {option.content}
+            {option.content.label}
           </p>
           <div
             className={`z-0 absolute w-full h-[90%] left-0 top-[5%] ${option.isSelected && text_color ? textColor_inBorder[text_color] : "border-l border-r"} bg-green-200/10`}

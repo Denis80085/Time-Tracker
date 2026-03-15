@@ -60,11 +60,15 @@ function YearMouthPicker({
   };
 
   const MonthsOptions = useMemo(() => {
-    const options = [];
+    let res = [];
     for (let i = 0; i < 12; i++) {
-      options.push(Months[i]);
+      res.push({
+        index: i,
+        value: i,
+        label: Months[i],
+      });
     }
-    return options;
+    return res;
   }, []);
 
   return (
@@ -87,11 +91,17 @@ function YearMouthPicker({
           <WheelSelect
             text_color={"yellow"}
             size={"xl"}
-            options={items.map((item) => item.label)}
+            options={items.map((item, i) => {
+              return {
+                label: item.label,
+                value: item.value,
+                index: i,
+              };
+            })}
             displayAtOnce={5}
             selected={selectedYearIndex.current}
             selectionChanged={(o) => {
-              if (o.index === -1) return;
+              if (o === undefined) return;
 
               let bottomTriger = 2;
               let topTriger = items.length - 3;
@@ -107,7 +117,6 @@ function YearMouthPicker({
                 loadYears.current.from = items[0].value - 10;
                 selectedYearIndex.current = o.index + 10;
                 addOnBottom();
-                console.log(selectedYearIndex.current);
               }
             }}
           />

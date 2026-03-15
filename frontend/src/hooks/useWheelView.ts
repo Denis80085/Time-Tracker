@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 
-type Item = {
+type Item<T> = {
   scale: number;
-  content: string;
+  content: T;
   isSelected: boolean;
 };
 
-function getItemsContents(options: Array<string>, start: number, end: number) {
+function getItemsContents<T>(options: Array<T>, start: number, end: number) {
   if (start > end) {
-    let result = Array<string>();
+    let result = Array<T>();
     for (let i = start; i < options.length; i++) {
       result.push(options[i]);
     }
@@ -21,8 +21,8 @@ function getItemsContents(options: Array<string>, start: number, end: number) {
   return options.slice(start, end + 1);
 }
 
-function createItemWindow(contents: Array<string>, mid: number) {
-  let result = Array<Item>();
+function createItemWindow<T>(contents: Array<T>, mid: number) {
+  let result = Array<Item<T>>();
 
   for (let i = 0; i < contents.length; i++) {
     const d = Math.abs(i - mid);
@@ -38,11 +38,11 @@ function createItemWindow(contents: Array<string>, mid: number) {
   return result;
 }
 
-function useCycleWheelView(
-  options: Array<string>,
+function useCycleWheelView<T>(
+  options: Array<T>,
   n: number,
-): [Array<Item>, () => void, () => void, (index: number) => void] {
-  const [itemsWindow, setItemsWindow] = useState(Array<Item>);
+): [Array<Item<T>>, () => void, () => void, (index: number) => void] {
+  const [itemsWindow, setItemsWindow] = useState(Array<Item<T>>);
   const Range = useRef({ start: 0, end: n - 1 });
 
   useEffect(() => {
