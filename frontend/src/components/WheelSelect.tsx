@@ -51,7 +51,9 @@ const WheelSelect: FC<WheelSelectProps> = ({
 
   useEffect(() => {
     if (selected != null) select(selected);
-  }, [options, selected]);
+  }, [selected, options]);
+
+  console.log("rendered w-" + options.length);
 
   useEffect(() => {
     if (selectionChanged) {

@@ -3,7 +3,7 @@ import {
   useInfiniteList,
   type UpdateResult,
 } from "../hooks/useInfiniteList.ts";
-import { useState, useRef } from "react";
+import { useRef, useMemo } from "react";
 
 type YMPProps = {
   year?: number;
@@ -22,7 +22,7 @@ function YearMouthPicker({
     from: year - 10,
     to: year + 10,
   });
-  const [yearSelected, setYearSelected] = useState(-1);
+  const selectedYearIndex = useRef(-1);
 
   const handelUpdate = () => {
     let res: UpdateResult = { hasMore: true, items: [] };
@@ -36,14 +36,15 @@ function YearMouthPicker({
       });
     }
 
-    if (yearSelected < 0) setYearSelected(Math.floor(res.items.length / 2));
+    if (selectedYearIndex.current < 0)
+      selectedYearIndex.current = Math.floor(res.items.length / 2);
 
     return res;
   };
 
   const [items, addOnTop, addOnBottom] = useInfiniteList(handelUpdate);
 
-  let Months: Record<number, string> = {
+  const Months: Record<number, string> = {
     0: "Januar",
     1: "Februar",
     2: "März",
@@ -58,19 +59,29 @@ function YearMouthPicker({
     11: "Dezember",
   };
 
+  const MonthsOptions = useMemo(() => {
+    const options = [];
+    for (let i = 0; i < 12; i++) {
+      options.push(Months[i]);
+    }
+    return options;
+  }, []);
+
   return (
     <div
       className={`grid grid-cols-1 grid-rows-[1fr_auto] place-items-center py-4 ${props.className ?? ""}`}
     >
       <div className="w-full flex justify-around items-center">
         <div className="basis-1/2">
-          <WheelSelect
-            text_color={"green"}
-            size={"xl"}
-            options={Object.values(Months)}
-            displayAtOnce={5}
-            selected={month}
-          />
+          {
+            <WheelSelect
+              text_color={"green"}
+              size={"xl"}
+              options={MonthsOptions}
+              displayAtOnce={5}
+              selected={month}
+            />
+          }
         </div>
         <div className="basis-1/2">
           <WheelSelect
@@ -78,7 +89,7 @@ function YearMouthPicker({
             size={"xl"}
             options={items.map((item) => item.label)}
             displayAtOnce={5}
-            selected={yearSelected}
+            selected={selectedYearIndex.current}
             selectionChanged={(o) => {
               if (o.index === -1) return;
 
@@ -88,14 +99,15 @@ function YearMouthPicker({
               if (o.index >= topTriger) {
                 loadYears.current.from = items[items.length - 1].value + 1;
                 loadYears.current.to = items[items.length - 1].value + 10;
-                setYearSelected(o.index);
+                selectedYearIndex.current = o.index;
                 addOnTop();
               }
               if (o.index <= bottomTriger) {
                 loadYears.current.to = items[0].value - 1;
                 loadYears.current.from = items[0].value - 10;
-                setYearSelected(o.index + 10);
+                selectedYearIndex.current = o.index + 10;
                 addOnBottom();
+                console.log(selectedYearIndex.current);
               }
             }}
           />
