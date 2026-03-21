@@ -35,23 +35,31 @@ function createItemWindow<T>(contents: Array<T>, mid: number) {
       isSelected: i === mid,
     });
   }
-  return result;
+  return { window: result, selected: result[mid] };
 }
 
 function useCycleWheelView<T>(
   options: Array<T>,
   n: number,
-): [Array<Item<T>>, () => void, () => void, (index: number) => void] {
+): [
+  Array<Item<T>>,
+  Item<T> | undefined,
+  () => void,
+  () => void,
+  (index: number) => void,
+] {
   const [itemsWindow, setItemsWindow] = useState(Array<Item<T>>);
+  const [selectedItem, setSelectedItem] = useState<Item<T>>();
   const Range = useRef({ start: 0, end: n - 1 });
 
   useEffect(() => {
-    setItemsWindow(() =>
-      createItemWindow(
-        options.slice(Range.current.start, Range.current.end + 1),
-        (n - 1) / 2,
-      ),
+    const ItemWindow = createItemWindow(
+      options.slice(Range.current.start, Range.current.end + 1),
+      (n - 1) / 2,
     );
+
+    setItemsWindow(() => ItemWindow.window);
+    setSelectedItem(ItemWindow.selected);
   }, [options]);
 
   const updateWindow = () => {
@@ -61,7 +69,10 @@ function useCycleWheelView<T>(
       Range.current.end,
     );
 
-    setItemsWindow(() => createItemWindow(contents, (n - 1) / 2));
+    const ItemWindow = createItemWindow(contents, (n - 1) / 2);
+
+    setItemsWindow(() => ItemWindow.window);
+    setSelectedItem(ItemWindow.selected);
   };
 
   const select = (index: number) => {
@@ -100,7 +111,7 @@ function useCycleWheelView<T>(
     updateWindow();
   };
 
-  return [itemsWindow, next, prev, select];
+  return [itemsWindow, selectedItem, next, prev, select];
 }
 
 export { useCycleWheelView };

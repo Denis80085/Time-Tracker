@@ -3,7 +3,7 @@ import {
   useInfiniteList,
   type UpdateResult,
 } from "../hooks/useInfiniteList.ts";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useCallback } from "react";
 
 type YMPProps = {
   year?: number;
@@ -24,7 +24,10 @@ function YearMouthPicker({
   });
   const selectedYearIndex = useRef(-1);
 
-  const handelUpdate = () => {
+  const monthRef = useRef(month);
+  const yearRef = useRef(year);
+
+  const handelUpdate = useCallback(() => {
     let res: UpdateResult = { hasMore: true, items: [] };
 
     let load = loadYears.current;
@@ -40,7 +43,7 @@ function YearMouthPicker({
       selectedYearIndex.current = Math.floor(res.items.length / 2);
 
     return res;
-  };
+  }, [loadYears, selectedYearIndex]);
 
   const [items, addOnTop, addOnBottom] = useInfiniteList(handelUpdate);
 
@@ -83,7 +86,11 @@ function YearMouthPicker({
               size={"xl"}
               options={MonthsOptions}
               displayAtOnce={5}
-              selected={month}
+              selected={monthRef.current}
+              selectionChanged={(o) => {
+                if (o === undefined) return;
+                monthRef.current = o.value;
+              }}
             />
           }
         </div>
@@ -102,20 +109,20 @@ function YearMouthPicker({
             selected={selectedYearIndex.current}
             selectionChanged={(o) => {
               if (o === undefined) return;
-
+              yearRef.current = o.value;
               let bottomTriger = 2;
               let topTriger = items.length - 3;
+              selectedYearIndex.current = o.index;
 
               if (o.index >= topTriger) {
                 loadYears.current.from = items[items.length - 1].value + 1;
                 loadYears.current.to = items[items.length - 1].value + 10;
-                selectedYearIndex.current = o.index;
                 addOnTop();
               }
               if (o.index <= bottomTriger) {
                 loadYears.current.to = items[0].value - 1;
                 loadYears.current.from = items[0].value - 10;
-                selectedYearIndex.current = o.index + 10;
+                selectedYearIndex.current += 10;
                 addOnBottom();
               }
             }}

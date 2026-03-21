@@ -50,24 +50,24 @@ const WheelSelect: FC<WheelSelectProps> = ({
   selected,
   selectionChanged,
 }) => {
-  const [itemsWindow, next, prev, select] = useCycleWheelView(
+  const [itemsWindow, selectedItem, next, prev, select] = useCycleWheelView(
     options,
     displayAtOnce,
   );
 
   useEffect(() => {
     if (selected != null) select(selected);
-  }, [selected, options]);
-
-  console.log("rendered w-" + options.length);
+  }, [options, selected]);
 
   useEffect(() => {
-    if (selectionChanged) {
-      let selectedInWindow = itemsWindow.find((i) => i.isSelected);
+    if (!selectedItem || !selectionChanged) return;
 
-      selectionChanged(selectedInWindow?.content);
-    }
-  }, [itemsWindow]);
+    selectionChanged({
+      label: selectedItem.content.label,
+      value: selectedItem.content.value,
+      index: selectedItem.content.index,
+    });
+  }, [selectedItem]);
 
   const textColor_inBorder = {
     default: "inborder-light",
@@ -80,7 +80,7 @@ const WheelSelect: FC<WheelSelectProps> = ({
 
   return (
     <div
-      onWheel={(e) => {
+      onWheel={async (e) => {
         if (e.deltaY > 0) next();
         else prev();
         //TODO: implement scrolling with request frame animation
