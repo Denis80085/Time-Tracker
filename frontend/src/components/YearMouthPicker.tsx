@@ -4,12 +4,14 @@ import {
   type UpdateResult,
 } from "../hooks/useInfiniteList.ts";
 import { useRef, useMemo, useCallback } from "react";
+import Button from "./Button.tsx";
 
 type YMPProps = {
   year?: number;
   month?: number;
   className?: string;
-  onSubmit?: (date: Date) => void;
+  onSubmit?: (YearMonth: Pick<YMPProps, "year" | "month">) => void;
+  onCancel?: () => void;
 };
 
 function YearMouthPicker({
@@ -129,14 +131,19 @@ function YearMouthPicker({
           />
         </div>
       </div>
-      <div className="">
-        <button className="bg-gray-900 text-white rounded-md px-2 py-1">
-          {/*TODO: Replace with own custom buttons*/}
-          Submit
-        </button>
-        <button className="bg-gray-900 text-white rounded-md px-2 py-1">
-          Cancel
-        </button>
+      <div className="mt-1.5 w-full flex justify-center items-center gap-x-3">
+        <Button
+          variant="green"
+          size="medium"
+          onClick={() =>
+            onSubmit?.({ year: yearRef.current, month: monthRef.current })
+          }
+        >
+          SUBMIT
+        </Button>
+        <Button variant="red" size="medium" onClick={props.onCancel}>
+          CANCEL
+        </Button>
       </div>
     </div>
   );

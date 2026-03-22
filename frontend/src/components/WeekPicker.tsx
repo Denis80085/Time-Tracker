@@ -86,7 +86,7 @@ const WeekPicker = () => {
   const [isYearMouthMode, setIsYearMouthMode] = useState(false);
   const Start = useWeekControlStore((state) => state.start);
   const End = useWeekControlStore((state) => state.end);
-  const [localDate, setLocalDate] = useState(Start); // for Month and Year
+  const [localDate, setLocalDate] = useState(new Date(Start)); // for Month and Year
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -208,6 +208,19 @@ const WeekPicker = () => {
           <YearMouthPicker
             year={localDate.getFullYear()}
             month={localDate.getMonth()}
+            onCancel={() => setIsYearMouthMode(false)}
+            onSubmit={(ym) => {
+              setLocalDate((prev) => {
+                let newYear =
+                  ym.year != undefined ? ym.year : prev.getFullYear();
+                let newMonth =
+                  ym.month != undefined ? ym.month : prev.getMonth();
+                prev.setFullYear(newYear);
+                prev.setMonth(newMonth);
+                return new Date(prev);
+              });
+              setIsYearMouthMode(false);
+            }}
           />
         ) : (
           <div className={`grid grid-rows-[auto_repeat(6,_1fr)]`}>
